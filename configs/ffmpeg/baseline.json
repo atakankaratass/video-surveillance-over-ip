@@ -1,0 +1,7 @@
+{
+  "videoCodec": "libx264",
+  "preset": "veryfast",
+  "tune": "zerolatency",
+  "pixelFormat": "yuv420p",
+  "manifestName": "live.mpd"
+}
