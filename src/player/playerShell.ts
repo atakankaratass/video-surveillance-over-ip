@@ -1,3 +1,5 @@
+import { getPauseButtonLabel } from "./controls";
+
 export type PlayerStatus =
   | "waiting-for-stream"
   | "connecting"
@@ -14,6 +16,7 @@ export function createPlayerShellMarkup(status: PlayerStatus): string {
     <section>
       <h1>CS 418 Video Surveillance over IP</h1>
       <p data-testid="player-status">${getStatusLabel(status)}</p>
+      <p data-testid="screenshot-status">Screenshot status: idle</p>
       <video
         data-testid="player-video"
         controls
@@ -24,9 +27,11 @@ export function createPlayerShellMarkup(status: PlayerStatus): string {
         height="360"
       ></video>
       <div aria-label="Player controls">
-        <button type="button">Pause</button>
-        <button type="button">Go Live</button>
-        <button type="button">Screenshot</button>
+        <button type="button" data-testid="pause-button">${getPauseButtonLabel(
+          status,
+        )}</button>
+        <button type="button" data-testid="go-live-button">Go Live</button>
+        <button type="button" data-testid="screenshot-button">Screenshot</button>
       </div>
     </section>
   `;
