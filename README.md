@@ -42,4 +42,22 @@ The repository is being built incrementally with strict checkpoints. Baseline do
 
 ## Current Phase
 
-Phase 1: repository and documentation bootstrap.
+Phase 2: tooling bootstrap plus config and environment validation.
+
+## Available Commands
+
+- `make install`
+- `make lint`
+- `make typecheck`
+- `make test`
+- `make build`
+- `make e2e`
+- `make validate-env`
+- `make validate-pr`
+
+## Local Browser Testing
+
+- Headless browser tests: `npm run e2e`
+- Visible local browser run: `npm run e2e:headed`
+
+The project will be announced as manual-demo-ready once the real player flow and baseline streaming pipeline are in place.

@@ -1,0 +1,25 @@
+{
+  "paths": {
+    "outputRoot": "./output",
+    "dashRoot": "./output/dash"
+  },
+  "capture": {
+    "videoDevice": "default-camera",
+    "audioDevice": null
+  },
+  "streaming": {
+    "segmentDurationSeconds": 4,
+    "dvrWindowSeconds": 120
+  },
+  "server": {
+    "host": "127.0.0.1",
+    "port": 8080
+  },
+  "motion": {
+    "enabled": false,
+    "threshold": 0.2
+  },
+  "thumbnails": {
+    "intervalSeconds": 10
+  }
+}

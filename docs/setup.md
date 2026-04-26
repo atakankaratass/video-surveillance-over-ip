@@ -9,7 +9,17 @@
 
 ## Planned Setup Flow
 
-Detailed commands will be added once the tooling bootstrap is complete.
+Current bootstrap commands:
+
+- `make install`
+- `make validate-env`
+- `make validate-pr`
+
+`make validate-env` currently checks:
+
+- FFmpeg availability on PATH
+- NGINX availability on PATH
+- configured output path writability assumptions
 
 Expected areas to document:
 

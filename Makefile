@@ -1,6 +1,6 @@
 .DEFAULT_GOAL := help
 
-.PHONY: help install format lint typecheck test test-coverage build e2e validate-pr
+.PHONY: help install format lint typecheck test test-coverage build e2e validate-env validate-pr
 
 help:
 	@echo "Available targets:"
@@ -12,6 +12,7 @@ help:
 	@echo "  make test-coverage  - Run unit tests with coverage"
 	@echo "  make build          - Build the web app"
 	@echo "  make e2e            - Run Playwright tests"
+	@echo "  make validate-env   - Run FFmpeg/NGINX environment checks"
 	@echo "  make validate-pr    - Run the full local validation suite"
 
 install:
@@ -37,6 +38,9 @@ build:
 
 e2e:
 	npm run e2e
+
+validate-env:
+	npm run validate:env
 
 validate-pr:
 	npm run validate:push
