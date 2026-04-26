@@ -10,7 +10,9 @@ describe("parseAppConfig", () => {
         dashRoot: "./output/dash",
       },
       capture: {
-        videoDevice: "default-camera",
+        inputFormat: "avfoundation",
+        inputSource: "0:none",
+        frameRate: 30,
         audioDevice: null,
       },
       streaming: {
@@ -32,7 +34,40 @@ describe("parseAppConfig", () => {
 
     expect(config.streaming.segmentDurationSeconds).toBe(4);
     expect(config.server.port).toBe(8080);
+    expect(config.capture.inputSource).toBe("0:none");
     expect(config.capture.audioDevice).toBeNull();
+  });
+
+  it("rejects an empty input source", () => {
+    expect(() =>
+      parseAppConfig({
+        paths: {
+          outputRoot: "./output",
+          dashRoot: "./output/dash",
+        },
+        capture: {
+          inputFormat: "avfoundation",
+          inputSource: "",
+          frameRate: 30,
+          audioDevice: null,
+        },
+        streaming: {
+          segmentDurationSeconds: 4,
+          dvrWindowSeconds: 120,
+        },
+        server: {
+          host: "127.0.0.1",
+          port: 8080,
+        },
+        motion: {
+          enabled: false,
+          threshold: 0.2,
+        },
+        thumbnails: {
+          intervalSeconds: 10,
+        },
+      }),
+    ).toThrowError("capture.inputSource must be a non-empty string");
   });
 
   it("rejects unsupported segment durations", () => {
@@ -43,7 +78,9 @@ describe("parseAppConfig", () => {
           dashRoot: "./output/dash",
         },
         capture: {
-          videoDevice: "default-camera",
+          inputFormat: "avfoundation",
+          inputSource: "0:none",
+          frameRate: 30,
           audioDevice: null,
         },
         streaming: {
@@ -73,7 +110,9 @@ describe("parseAppConfig", () => {
           dashRoot: "./output/dash",
         },
         capture: {
-          videoDevice: "default-camera",
+          inputFormat: "avfoundation",
+          inputSource: "0:none",
+          frameRate: 30,
           audioDevice: null,
         },
         streaming: {

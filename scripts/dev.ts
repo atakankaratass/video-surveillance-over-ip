@@ -26,6 +26,9 @@ async function main(): Promise<void> {
   });
 
   const bootstrap = await bootstrapServer(config, process.cwd(), {
+    ensureDirectory: async (path) => {
+      await mkdir(path, { recursive: true });
+    },
     writeTextFile: async (path, content) => {
       await mkdir(dirname(path), { recursive: true });
       await writeFile(path, content, "utf8");

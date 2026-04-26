@@ -11,7 +11,9 @@ describe("validateEnvironment", () => {
           dashRoot: "./output/dash",
         },
         capture: {
-          videoDevice: "default-camera",
+          inputFormat: "avfoundation",
+          inputSource: "0:none",
+          frameRate: 30,
           audioDevice: null,
         },
         streaming: {
@@ -48,7 +50,9 @@ describe("validateEnvironment", () => {
           dashRoot: "./output/dash",
         },
         capture: {
-          videoDevice: "default-camera",
+          inputFormat: "avfoundation",
+          inputSource: "0:none",
+          frameRate: 30,
           audioDevice: null,
         },
         streaming: {
@@ -88,7 +92,9 @@ describe("validateEnvironment", () => {
           dashRoot: "./output/dash",
         },
         capture: {
-          videoDevice: "default-camera",
+          inputFormat: "avfoundation",
+          inputSource: "0:none",
+          frameRate: 30,
           audioDevice: null,
         },
         streaming: {

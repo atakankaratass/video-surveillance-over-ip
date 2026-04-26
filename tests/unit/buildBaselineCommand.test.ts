@@ -9,7 +9,9 @@ const config: AppConfig = {
     dashRoot: "./output/dash",
   },
   capture: {
-    videoDevice: "default-camera",
+    inputFormat: "avfoundation",
+    inputSource: "0:none",
+    frameRate: 30,
     audioDevice: null,
   },
   streaming: {
@@ -38,8 +40,19 @@ describe("buildBaselineCommand", () => {
     expect(result.args).toContain("libx264");
     expect(result.args).toContain("-f");
     expect(result.args).toContain("dash");
-    expect(result.args).toContain("default-camera");
+    expect(result.args).toContain("avfoundation");
+    expect(result.args).toContain("0:none");
     expect(result.manifestPath).toBe("./output/dash/live.mpd");
+  });
+
+  it("uses the configured frame rate before the input source", () => {
+    const result = buildBaselineCommand(config);
+
+    const frameRateIndex = result.args.indexOf("-framerate");
+    const inputIndex = result.args.indexOf("-i");
+
+    expect(result.args[frameRateIndex + 1]).toBe("30");
+    expect(frameRateIndex).toBeLessThan(inputIndex);
   });
 
   it("uses the configured segment duration and dvr window size", () => {

@@ -9,7 +9,9 @@ const config: AppConfig = {
     dashRoot: "./output/dash",
   },
   capture: {
-    videoDevice: "default-camera",
+    inputFormat: "avfoundation",
+    inputSource: "0:none",
+    frameRate: 30,
     audioDevice: null,
   },
   streaming: {
@@ -32,6 +34,7 @@ const config: AppConfig = {
 describe("bootstrapServer", () => {
   it("builds ffmpeg and nginx startup artifacts from the shared config", async () => {
     const result = await bootstrapServer(config, "/workspace/project", {
+      ensureDirectory: async () => undefined,
       writeTextFile: async () => undefined,
     });
 
@@ -43,13 +46,21 @@ describe("bootstrapServer", () => {
 
   it("writes the generated nginx config to the expected path", async () => {
     const writes: Array<{ path: string; content: string }> = [];
+    const directories: string[] = [];
 
     await bootstrapServer(config, "/workspace/project", {
+      ensureDirectory: async (path) => {
+        directories.push(path);
+      },
       writeTextFile: async (path, content) => {
         writes.push({ path, content });
       },
     });
 
+    expect(directories).toEqual([
+      "/workspace/project/output",
+      "/workspace/project/output/dash",
+    ]);
     expect(writes).toHaveLength(1);
     expect(writes[0]?.path).toBe(
       "/workspace/project/configs/nginx/generated.conf",

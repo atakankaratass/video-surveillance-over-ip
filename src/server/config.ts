@@ -6,7 +6,9 @@ export interface AppConfig {
     dashRoot: string;
   };
   capture: {
-    videoDevice: string;
+    inputFormat: string;
+    inputSource: string;
+    frameRate: number;
     audioDevice: string | null;
   };
   streaming: {
@@ -103,7 +105,9 @@ export function parseAppConfig(rawConfig: unknown): AppConfig {
       dashRoot: readRelativePath(paths.dashRoot, "paths.dashRoot"),
     },
     capture: {
-      videoDevice: readString(capture.videoDevice, "capture.videoDevice"),
+      inputFormat: readString(capture.inputFormat, "capture.inputFormat"),
+      inputSource: readString(capture.inputSource, "capture.inputSource"),
+      frameRate: readNumber(capture.frameRate, "capture.frameRate"),
       audioDevice:
         capture.audioDevice === null
           ? null

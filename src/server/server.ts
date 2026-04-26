@@ -3,8 +3,10 @@ import { resolve } from "node:path";
 import type { AppConfig } from "./config";
 import { buildBaselineCommand } from "./ffmpeg/buildBaselineCommand";
 import { generateNginxConfig } from "./nginx/generateConfig";
+import { getRuntimeDirectories } from "./runtimePaths";
 
 export interface ServerBootstrapDependencies {
+  ensureDirectory(path: string): Promise<void>;
   writeTextFile(path: string, content: string): Promise<void>;
 }
 
@@ -23,6 +25,10 @@ export async function bootstrapServer(
   const ffmpeg = buildBaselineCommand(config);
   const nginxConfig = generateNginxConfig(config, projectRoot);
   const nginxConfigPath = "configs/nginx/generated.conf";
+
+  for (const directory of getRuntimeDirectories(config, projectRoot)) {
+    await dependencies.ensureDirectory(directory);
+  }
 
   await dependencies.writeTextFile(
     resolve(projectRoot, nginxConfigPath),

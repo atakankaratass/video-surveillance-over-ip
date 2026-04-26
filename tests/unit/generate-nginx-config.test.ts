@@ -9,7 +9,9 @@ const config: AppConfig = {
     dashRoot: "./output/dash",
   },
   capture: {
-    videoDevice: "default-camera",
+    inputFormat: "avfoundation",
+    inputSource: "0:none",
+    frameRate: 30,
     audioDevice: null,
   },
   streaming: {
