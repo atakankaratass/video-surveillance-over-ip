@@ -3,6 +3,8 @@ dist/
 coverage/
 playwright-report/
 test-results/
+output/
+configs/nginx/generated.conf
 .DS_Store
 .worktrees/
 worktrees/

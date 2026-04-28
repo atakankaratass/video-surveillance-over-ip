@@ -1,6 +1,6 @@
 .DEFAULT_GOAL := help
 
-.PHONY: help install format lint typecheck test test-coverage build e2e validate-env validate-pr
+.PHONY: help install format lint typecheck test test-coverage build e2e validate-env list-devices demo-check startup-prepare startup-nginx startup-ffmpeg startup-all validate-pr
 
 help:
 	@echo "Available targets:"
@@ -13,6 +13,12 @@ help:
 	@echo "  make build          - Build the web app"
 	@echo "  make e2e            - Run Playwright tests"
 	@echo "  make validate-env   - Run FFmpeg/NGINX environment checks"
+	@echo "  make list-devices   - List local avfoundation capture devices"
+	@echo "  make demo-check     - Check whether the local demo path is ready"
+	@echo "  make startup-prepare - Generate local startup artifacts and summary"
+	@echo "  make startup-nginx  - Generate artifacts and start NGINX"
+	@echo "  make startup-ffmpeg - Generate artifacts and start FFmpeg"
+	@echo "  make startup-all    - Generate artifacts and start NGINX and FFmpeg"
 	@echo "  make validate-pr    - Run the full local validation suite"
 
 install:
@@ -41,6 +47,24 @@ e2e:
 
 validate-env:
 	npm run validate:env
+
+list-devices:
+	npm run list:devices
+
+demo-check:
+	npm run demo:check
+
+startup-prepare:
+	npm run startup:prepare
+
+startup-nginx:
+	npm run startup:nginx
+
+startup-ffmpeg:
+	npm run startup:ffmpeg
+
+startup-all:
+	npm run startup:all
 
 validate-pr:
 	npm run validate:push
