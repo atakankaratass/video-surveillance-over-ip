@@ -8,6 +8,7 @@ export interface EnvironmentValidationResult {
 export interface EnvironmentDependencies {
   commandExists(command: string): Promise<boolean>;
   directoryWritable(path: string): Promise<boolean>;
+  portAvailable(port: number): Promise<boolean>;
 }
 
 export async function validateEnvironment(
@@ -30,6 +31,10 @@ export async function validateEnvironment(
     if (!(await dependencies.directoryWritable(outputPath))) {
       issues.push(`Path is not writable: ${outputPath}`);
     }
+  }
+
+  if (!(await dependencies.portAvailable(config.server.port))) {
+    issues.push(`Configured server port is unavailable: ${config.server.port}`);
   }
 
   return {

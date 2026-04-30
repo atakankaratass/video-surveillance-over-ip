@@ -6,9 +6,30 @@ import { parseAppConfig } from "../src/server/config";
 import { parseDevOptions } from "../src/server/devOptions";
 import { createProcessManager } from "../src/server/ffmpeg/processManager";
 import { listAvfoundationDevices } from "../src/server/ffmpeg/listAvfoundationDevices";
+import { startLiveControlServer } from "../src/server/liveControlServer";
 import { bootstrapServer } from "../src/server/server";
 import { createStartupPlan } from "../src/server/startupPlan";
 import { formatStartupSummary } from "../src/server/startupSummary";
+
+function waitForShutdownSignal(
+  processManager: ReturnType<typeof createProcessManager>,
+): Promise<void> {
+  return new Promise((resolvePromise) => {
+    const shutdown = async (): Promise<void> => {
+      process.off("SIGINT", handleSignal);
+      process.off("SIGTERM", handleSignal);
+      await processManager.stopAll();
+      resolvePromise();
+    };
+
+    const handleSignal = (): void => {
+      void shutdown();
+    };
+
+    process.on("SIGINT", handleSignal);
+    process.on("SIGTERM", handleSignal);
+  });
+}
 
 async function main(): Promise<void> {
   const options = parseDevOptions(process.argv.slice(2));
@@ -46,6 +67,8 @@ async function main(): Promise<void> {
       };
     },
   });
+  let controlServer: Awaited<ReturnType<typeof startLiveControlServer>> | null =
+    null;
 
   const bootstrap = await bootstrapServer(config, process.cwd(), {
     ensureDirectory: async (path) => {
@@ -84,6 +107,20 @@ async function main(): Promise<void> {
       startupPlan.ffmpeg.args,
     );
     console.log("FFmpeg process started.");
+  }
+
+  if (options.startNginx || options.startFfmpeg) {
+    controlServer = await startLiveControlServer({
+      port: 8091,
+      sessionTimeoutMs: 5000,
+      onShutdown: async () => {
+        await processManager.stopAll();
+      },
+    });
+    console.log(`Heartbeat URL: ${controlServer.heartbeatUrl}`);
+    console.log("Processes running. Press Ctrl+C to stop them cleanly.");
+    await waitForShutdownSignal(processManager);
+    await controlServer.close();
   }
 }
 

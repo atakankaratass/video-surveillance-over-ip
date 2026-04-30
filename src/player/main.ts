@@ -1,6 +1,17 @@
-import { getLiveEdgeTime, getToggledPlaybackStatus } from "./controls";
+import {
+  formatPlaybackTime,
+  getLiveEdgeTime,
+  getSeekTargetTime,
+  getSeekValue,
+  getToggledPlaybackStatus,
+} from "./controls";
 import { initializeDashPlayback } from "./dashPlayback";
-import { createPlayerShellMarkup, type PlayerStatus } from "./playerShell";
+import { startLiveHeartbeat } from "./liveHeartbeat";
+import {
+  applyPlayerShellState,
+  createPlayerShellMarkup,
+  type PlayerStatus,
+} from "./playerShell";
 import { captureScreenshot } from "./screenshot";
 
 const appElement = document.querySelector<HTMLDivElement>("#app");
@@ -12,85 +23,204 @@ if (!appElement) {
 const rootElement = appElement;
 let currentStatus: PlayerStatus = "waiting-for-stream";
 
-function render(status: PlayerStatus): HTMLVideoElement {
+rootElement.innerHTML = createPlayerShellMarkup(currentStatus);
+
+const videoElement = rootElement.querySelector<HTMLVideoElement>(
+  '[data-testid="player-video"]',
+);
+const statusElement = rootElement.querySelector<HTMLParagraphElement>(
+  '[data-testid="player-status"]',
+);
+const pauseButton = rootElement.querySelector<HTMLButtonElement>(
+  '[data-testid="pause-button"]',
+);
+const goLiveButton = rootElement.querySelector<HTMLButtonElement>(
+  '[data-testid="go-live-button"]',
+);
+const screenshotButton = rootElement.querySelector<HTMLButtonElement>(
+  '[data-testid="screenshot-button"]',
+);
+const screenshotStatus = rootElement.querySelector<HTMLParagraphElement>(
+  '[data-testid="screenshot-status"]',
+);
+const currentTimeElement = rootElement.querySelector<HTMLParagraphElement>(
+  '[data-testid="current-time"]',
+);
+const liveEdgeTimeElement = rootElement.querySelector<HTMLParagraphElement>(
+  '[data-testid="live-edge-time"]',
+);
+const seekSlider = rootElement.querySelector<HTMLInputElement>(
+  '[data-testid="seek-slider"]',
+);
+const seekInput = rootElement.querySelector<HTMLInputElement>(
+  '[data-testid="seek-input"]',
+);
+const seekButton = rootElement.querySelector<HTMLButtonElement>(
+  '[data-testid="seek-button"]',
+);
+
+if (
+  !videoElement ||
+  !statusElement ||
+  !pauseButton ||
+  !goLiveButton ||
+  !screenshotButton ||
+  !screenshotStatus ||
+  !currentTimeElement ||
+  !liveEdgeTimeElement ||
+  !seekSlider ||
+  !seekInput ||
+  !seekButton
+) {
+  throw new Error("Player shell elements were not found.");
+}
+
+const playerVideoElement = videoElement;
+const playerStatusElement = statusElement;
+const playerPauseButton = pauseButton;
+const playerGoLiveButton = goLiveButton;
+const playerScreenshotButton = screenshotButton;
+const playerScreenshotStatus = screenshotStatus;
+const playerCurrentTimeElement = currentTimeElement;
+const playerLiveEdgeTimeElement = liveEdgeTimeElement;
+const playerSeekSlider = seekSlider;
+const playerSeekInput = seekInput;
+const playerSeekButton = seekButton;
+const heartbeatUrl = `http://${window.location.hostname}:8091/heartbeat`;
+
+function applyStatus(status: PlayerStatus): void {
   currentStatus = status;
-  rootElement.innerHTML = createPlayerShellMarkup(status);
-
-  const videoElement = rootElement.querySelector<HTMLVideoElement>(
-    '[data-testid="player-video"]',
+  applyPlayerShellState(
+    {
+      statusElement: playerStatusElement,
+      pauseButton: playerPauseButton,
+    },
+    status,
   );
-
-  if (!videoElement) {
-    throw new Error("Player video element was not found.");
-  }
-
-  return videoElement;
 }
 
-function bindControls(videoElement: HTMLVideoElement): void {
-  const pauseButton = rootElement.querySelector<HTMLButtonElement>(
-    '[data-testid="pause-button"]',
-  );
-  const goLiveButton = rootElement.querySelector<HTMLButtonElement>(
-    '[data-testid="go-live-button"]',
-  );
-  const screenshotButton = rootElement.querySelector<HTMLButtonElement>(
-    '[data-testid="screenshot-button"]',
-  );
-  const screenshotStatus = rootElement.querySelector<HTMLParagraphElement>(
-    '[data-testid="screenshot-status"]',
-  );
+function updateSeekUi(): void {
+  const liveEdgeTime = getLiveEdgeTime(playerVideoElement.seekable);
 
-  if (!pauseButton || !goLiveButton || !screenshotButton || !screenshotStatus) {
-    throw new Error("Player controls were not found.");
+  playerCurrentTimeElement.textContent = formatPlaybackTime(
+    playerVideoElement.currentTime,
+  );
+  playerLiveEdgeTimeElement.textContent = formatPlaybackTime(liveEdgeTime ?? 0);
+
+  if (liveEdgeTime === null) {
+    playerSeekSlider.value = "100";
+    return;
   }
 
-  pauseButton.addEventListener("click", () => {
-    const nextVideoElement = render(getToggledPlaybackStatus(currentStatus));
-    bindControls(nextVideoElement);
-  });
-
-  goLiveButton.addEventListener("click", () => {
-    const liveEdgeTime = getLiveEdgeTime(videoElement.seekable);
-
-    if (liveEdgeTime !== null) {
-      videoElement.currentTime = liveEdgeTime;
-    }
-
-    const nextVideoElement = render("live");
-    bindControls(nextVideoElement);
-  });
-
-  screenshotButton.addEventListener("click", () => {
-    try {
-      const result = captureScreenshot<HTMLVideoElement>(videoElement, {
-        now: () => new Date(),
-        createCanvas: () => document.createElement("canvas"),
-        createDownloadLink: () => document.createElement("a"),
-      });
-      screenshotStatus.textContent = `Screenshot status: saved ${result.fileName}`;
-    } catch (error) {
-      const message =
-        error instanceof Error ? error.message : "Screenshot failed.";
-      screenshotStatus.textContent = `Screenshot status: ${message}`;
-    }
-  });
+  const rangeStart = Math.max(0, liveEdgeTime - 30);
+  playerSeekSlider.value = String(
+    getSeekValue(playerVideoElement.currentTime, rangeStart, liveEdgeTime),
+  );
 }
 
-const videoElement = render(currentStatus);
-bindControls(videoElement);
+playerPauseButton.addEventListener("click", () => {
+  const nextStatus = getToggledPlaybackStatus(currentStatus);
 
-initializeDashPlayback(videoElement, {
+  if (nextStatus === "paused") {
+    playerVideoElement.pause();
+  } else {
+    void playerVideoElement.play().catch(() => undefined);
+  }
+
+  applyStatus(nextStatus);
+});
+
+playerGoLiveButton.addEventListener("click", () => {
+  const liveEdgeTime = getLiveEdgeTime(playerVideoElement.seekable);
+
+  if (liveEdgeTime !== null) {
+    playerVideoElement.currentTime = liveEdgeTime;
+  }
+
+  void playerVideoElement.play().catch(() => undefined);
+  applyStatus("live");
+  updateSeekUi();
+});
+
+playerSeekSlider.addEventListener("input", () => {
+  const liveEdgeTime = getLiveEdgeTime(playerVideoElement.seekable);
+
+  if (liveEdgeTime === null) {
+    return;
+  }
+
+  const rangeStart = Math.max(0, liveEdgeTime - 30);
+  const targetTime = getSeekTargetTime(
+    Number(playerSeekSlider.value),
+    rangeStart,
+    liveEdgeTime,
+  );
+
+  playerVideoElement.currentTime = targetTime;
+  playerSeekInput.value = Math.round(targetTime).toString();
+  applyStatus("paused");
+  updateSeekUi();
+});
+
+playerSeekButton.addEventListener("click", () => {
+  const requestedSeconds = Number(playerSeekInput.value);
+
+  if (Number.isNaN(requestedSeconds) || requestedSeconds < 0) {
+    return;
+  }
+
+  playerVideoElement.currentTime = requestedSeconds;
+  applyStatus("paused");
+  updateSeekUi();
+});
+
+playerScreenshotButton.addEventListener("click", () => {
+  try {
+    const result = captureScreenshot<HTMLVideoElement>(playerVideoElement, {
+      now: () => new Date(),
+      createCanvas: () => document.createElement("canvas"),
+      createDownloadLink: () => document.createElement("a"),
+    });
+    playerScreenshotStatus.textContent = `Screenshot status: saved ${result.fileName}`;
+  } catch (error) {
+    const message =
+      error instanceof Error ? error.message : "Screenshot failed.";
+    playerScreenshotStatus.textContent = `Screenshot status: ${message}`;
+  }
+});
+
+applyStatus(currentStatus);
+updateSeekUi();
+
+if (heartbeatUrl) {
+  startLiveHeartbeat(heartbeatUrl);
+}
+
+playerVideoElement.addEventListener("timeupdate", () => {
+  updateSeekUi();
+});
+
+playerVideoElement.addEventListener("pause", () => {
+  if (currentStatus !== "paused") {
+    applyStatus("paused");
+  }
+});
+
+playerVideoElement.addEventListener("play", () => {
+  if (currentStatus === "paused") {
+    applyStatus("live");
+  }
+});
+
+initializeDashPlayback(playerVideoElement, {
   onConnecting() {
-    const nextVideoElement = render("connecting");
-    bindControls(nextVideoElement);
+    applyStatus("connecting");
   },
   onLive() {
-    const nextVideoElement = render("live");
-    bindControls(nextVideoElement);
+    void playerVideoElement.play().catch(() => undefined);
+    applyStatus("live");
   },
   onError() {
-    const nextVideoElement = render("waiting-for-stream");
-    bindControls(nextVideoElement);
+    applyStatus("waiting-for-stream");
   },
 });

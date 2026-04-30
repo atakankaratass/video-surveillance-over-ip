@@ -120,6 +120,8 @@ Current local state:
 - [x] Support `--start-ffmpeg`
 - [x] Support `--start-all`
 - [x] Support `--list-devices`
+- [x] Support clean process shutdown on Ctrl+C
+- [x] Add startup requirements evaluation for real machine readiness
 - [x] Print player URL in dev startup summary
 - [x] Print manifest URL in dev startup summary
 - [x] Print explicit FFmpeg command in dev startup summary
@@ -170,10 +172,10 @@ Current local state:
 - [x] Visible Playwright run is available with `npm run e2e:headed`
 - [x] Player shell interaction can be manually tested without live stream
 - [x] Startup prep command can generate runtime directories and NGINX config locally
-- [ ] Real local DASH stream playback is ready
-- [ ] Real local FFmpeg camera capture is ready
-- [ ] Real local NGINX delivery is ready
-- [ ] Real local screenshot from live video is ready
+- [x] Real local DASH stream playback is ready
+- [x] Real local FFmpeg camera capture is ready
+- [x] Real local NGINX delivery is ready
+- [x] Real local screenshot from live video is ready
 
 ## GitHub Repository Progress
 
@@ -198,31 +200,34 @@ Current local startup/dev/CI milestone contents:
 - demo readiness check script added locally
 - local demo readiness command verified on the real machine
 - startup artifact generation command verified on the real machine
+- startup helper command surface expanded and validated locally
+- startup requirements reporting verified on the real machine
 
 ## Remaining Core Assignment Work
 
-- [ ] Start NGINX successfully using generated config
-- [ ] Start FFmpeg successfully with real local camera input
-- [ ] Produce `live.mpd` and DASH segments locally
-- [ ] Serve generated DASH assets from NGINX
-- [ ] Confirm browser player can request the manifest successfully
-- [ ] Confirm browser player can start live playback from real DASH output
+- [x] Start NGINX successfully using generated config
+- [x] Start FFmpeg successfully with real local camera input
+- [x] Produce `live.mpd` and DASH segments locally
+- [x] Serve generated DASH assets from NGINX
+- [x] Confirm browser player can request the manifest successfully
+- [x] Confirm browser player can start live playback from real DASH output
 - [x] Verify local avfoundation device discovery against the real machine
-- [ ] Implement real live-edge behavior using actual stream state
-- [ ] Implement real pause behavior against live playback state
-- [ ] Implement real time-shift / rewind behavior against seekable live window
-- [ ] Implement explicit seek-to-time behavior in the player UI
-- [ ] Verify screenshot against real video frames instead of placeholder state
+- [x] Implement real live-edge behavior using actual stream state
+- [x] Implement real pause behavior against live playback state
+- [x] Implement real time-shift / rewind behavior against seekable live window
+- [x] Implement explicit seek-to-time behavior in the player UI
+- [x] Verify screenshot against real video frames instead of placeholder state
 - [ ] Validate end-to-end local flow with real camera capture
 
 ## Latency Measurement Work
 
-- [ ] Add latency measurement module
-- [ ] Add latency report output module
-- [ ] Add latency run script
+- [x] Add latency measurement module
+- [x] Add latency report output module
+- [x] Add latency run script
 - [ ] Record latency for `2` second segments
 - [ ] Record latency for `4` second segments
 - [ ] Record latency for `6` second segments
+- [x] Add latency methodology scaffold and report generation notes
 - [ ] Document latency methodology and limitations with real results
 
 ## Extra Credit Features
@@ -265,8 +270,8 @@ Current local startup/dev/CI milestone contents:
 - [x] Add real demo check script
 - [ ] Expand demo runbook with exact launch sequence
 - [ ] Verify webcam detection path for demo machine
-- [ ] Verify browser playback path for demo machine
-- [ ] Verify required controls in the real demo flow
+- [x] Verify browser playback path for demo machine
+- [x] Verify required controls in the real demo flow
 - [ ] Verify screenshot in the real demo flow
 - [ ] Document iOS limitation explicitly in final demo docs
 - [ ] Document Android/desktop recommendation explicitly

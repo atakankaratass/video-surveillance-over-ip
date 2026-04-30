@@ -9,6 +9,8 @@ export interface AppConfig {
     inputFormat: string;
     inputSource: string;
     frameRate: number;
+    pixelFormat: string;
+    videoSize: string;
     audioDevice: string | null;
   };
   streaming: {
@@ -108,6 +110,8 @@ export function parseAppConfig(rawConfig: unknown): AppConfig {
       inputFormat: readString(capture.inputFormat, "capture.inputFormat"),
       inputSource: readString(capture.inputSource, "capture.inputSource"),
       frameRate: readNumber(capture.frameRate, "capture.frameRate"),
+      pixelFormat: readString(capture.pixelFormat, "capture.pixelFormat"),
+      videoSize: readString(capture.videoSize, "capture.videoSize"),
       audioDevice:
         capture.audioDevice === null
           ? null

@@ -12,6 +12,8 @@ const config: AppConfig = {
     inputFormat: "avfoundation",
     inputSource: "0:none",
     frameRate: 30,
+    pixelFormat: "uyvy422",
+    videoSize: "1280x720",
     audioDevice: null,
   },
   streaming: {
@@ -49,10 +51,19 @@ describe("buildBaselineCommand", () => {
     const result = buildBaselineCommand(config);
 
     const frameRateIndex = result.args.indexOf("-framerate");
+    const wallclockIndex = result.args.indexOf("-use_wallclock_as_timestamps");
+    const pixelFormatIndex = result.args.indexOf("-pixel_format");
+    const videoSizeIndex = result.args.indexOf("-video_size");
     const inputIndex = result.args.indexOf("-i");
 
     expect(result.args[frameRateIndex + 1]).toBe("30");
+    expect(result.args[wallclockIndex + 1]).toBe("1");
+    expect(result.args[pixelFormatIndex + 1]).toBe("uyvy422");
+    expect(result.args[videoSizeIndex + 1]).toBe("1280x720");
     expect(frameRateIndex).toBeLessThan(inputIndex);
+    expect(wallclockIndex).toBeLessThan(inputIndex);
+    expect(pixelFormatIndex).toBeLessThan(inputIndex);
+    expect(videoSizeIndex).toBeLessThan(inputIndex);
   });
 
   it("uses the configured segment duration and dvr window size", () => {

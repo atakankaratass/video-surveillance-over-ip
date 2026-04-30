@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  applyPlayerShellState,
   createPlayerShellMarkup,
   getStatusLabel,
 } from "../../src/player/playerShell";
@@ -11,6 +12,11 @@ describe("playerShell", () => {
 
     expect(markup).toContain("CS 418 Video Surveillance over IP");
     expect(markup).toContain('data-testid="player-video"');
+    expect(markup).toContain('data-testid="seek-slider"');
+    expect(markup).toContain('data-testid="current-time"');
+    expect(markup).toContain('data-testid="live-edge-time"');
+    expect(markup).toContain('data-testid="seek-input"');
+    expect(markup).toContain('data-testid="seek-button"');
     expect(markup).toContain("Pause");
     expect(markup).toContain("Go Live");
     expect(markup).toContain("Screenshot");
@@ -20,5 +26,17 @@ describe("playerShell", () => {
     expect(getStatusLabel("waiting-for-stream")).toBe(
       "Player status: waiting-for-stream",
     );
+  });
+
+  it("updates existing shell labels without recreating the video element", () => {
+    const elements = {
+      statusElement: { textContent: "" },
+      pauseButton: { textContent: "" },
+    };
+
+    applyPlayerShellState(elements, "paused");
+
+    expect(elements.statusElement.textContent).toBe("Player status: paused");
+    expect(elements.pauseButton.textContent).toBe("Resume");
   });
 });

@@ -2,6 +2,7 @@ import { access } from "node:fs/promises";
 import { constants } from "node:fs";
 import { readFile } from "node:fs/promises";
 import { dirname } from "node:path";
+import { createServer } from "node:net";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 
@@ -28,6 +29,22 @@ async function directoryWritable(path: string): Promise<boolean> {
   }
 }
 
+async function portAvailable(port: number): Promise<boolean> {
+  return new Promise((resolve) => {
+    const server = createServer();
+
+    server.once("error", () => {
+      resolve(false);
+    });
+
+    server.once("listening", () => {
+      server.close(() => resolve(true));
+    });
+
+    server.listen(port, "127.0.0.1");
+  });
+}
+
 async function main(): Promise<void> {
   const configPath = process.argv[2] ?? "configs/app.example.json";
   const configText = await readFile(configPath, "utf8");
@@ -35,6 +52,7 @@ async function main(): Promise<void> {
   const result = await validateEnvironment(config, {
     commandExists,
     directoryWritable,
+    portAvailable,
   });
 
   if (!result.ok) {

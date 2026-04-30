@@ -20,3 +20,35 @@ export function getLiveEdgeTime(seekable: SeekableRange): number | null {
 
   return seekable.end(seekable.length - 1);
 }
+
+export function getSeekValue(
+  currentTime: number,
+  rangeStart: number,
+  rangeEnd: number,
+): number {
+  if (rangeEnd <= rangeStart) {
+    return 100;
+  }
+
+  const rawRatio = ((currentTime - rangeStart) / (rangeEnd - rangeStart)) * 100;
+  return Math.min(100, Math.max(0, Math.round(rawRatio)));
+}
+
+export function getSeekTargetTime(
+  sliderValue: number,
+  rangeStart: number,
+  rangeEnd: number,
+): number {
+  const safeValue = Math.min(100, Math.max(0, sliderValue));
+  return rangeStart + ((rangeEnd - rangeStart) * safeValue) / 100;
+}
+
+export function formatPlaybackTime(seconds: number): string {
+  const safeSeconds = Math.max(0, Math.floor(seconds));
+  const minutes = Math.floor(safeSeconds / 60)
+    .toString()
+    .padStart(2, "0");
+  const remainingSeconds = (safeSeconds % 60).toString().padStart(2, "0");
+
+  return `${minutes}:${remainingSeconds}`;
+}

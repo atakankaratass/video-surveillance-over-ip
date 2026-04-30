@@ -7,6 +7,8 @@
     "inputFormat": "avfoundation",
     "inputSource": "0:none",
     "frameRate": 30,
+    "pixelFormat": "uyvy422",
+    "videoSize": "1280x720",
     "audioDevice": null
   },
   "streaming": {
@@ -15,7 +17,7 @@
   },
   "server": {
     "host": "127.0.0.1",
-    "port": 8080
+    "port": 8090
   },
   "motion": {
     "enabled": false,

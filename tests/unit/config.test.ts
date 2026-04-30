@@ -13,6 +13,8 @@ describe("parseAppConfig", () => {
         inputFormat: "avfoundation",
         inputSource: "0:none",
         frameRate: 30,
+        pixelFormat: "uyvy422",
+        videoSize: "1280x720",
         audioDevice: null,
       },
       streaming: {
@@ -35,6 +37,8 @@ describe("parseAppConfig", () => {
     expect(config.streaming.segmentDurationSeconds).toBe(4);
     expect(config.server.port).toBe(8080);
     expect(config.capture.inputSource).toBe("0:none");
+    expect(config.capture.pixelFormat).toBe("uyvy422");
+    expect(config.capture.videoSize).toBe("1280x720");
     expect(config.capture.audioDevice).toBeNull();
   });
 
@@ -49,6 +53,8 @@ describe("parseAppConfig", () => {
           inputFormat: "avfoundation",
           inputSource: "",
           frameRate: 30,
+          pixelFormat: "uyvy422",
+          videoSize: "1280x720",
           audioDevice: null,
         },
         streaming: {
@@ -81,6 +87,8 @@ describe("parseAppConfig", () => {
           inputFormat: "avfoundation",
           inputSource: "0:none",
           frameRate: 30,
+          pixelFormat: "uyvy422",
+          videoSize: "1280x720",
           audioDevice: null,
         },
         streaming: {
@@ -113,6 +121,8 @@ describe("parseAppConfig", () => {
           inputFormat: "avfoundation",
           inputSource: "0:none",
           frameRate: 30,
+          pixelFormat: "uyvy422",
+          videoSize: "1280x720",
           audioDevice: null,
         },
         streaming: {

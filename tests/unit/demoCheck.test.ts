@@ -15,6 +15,8 @@ const config: AppConfig = {
     inputFormat: "avfoundation",
     inputSource: "0:none",
     frameRate: 30,
+    pixelFormat: "uyvy422",
+    videoSize: "1280x720",
     audioDevice: null,
   },
   streaming: {

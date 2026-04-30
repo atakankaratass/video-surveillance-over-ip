@@ -1,5 +1,9 @@
 import type { AppConfig } from "./config";
 import type { CaptureDevice } from "./ffmpeg/parseAvfoundationDevices";
+import {
+  evaluateStartupRequirements,
+  formatStartupRequirementsReport,
+} from "./startupRequirements";
 
 export interface DemoReadinessInputs {
   environmentOk: boolean;
@@ -56,4 +60,14 @@ export function formatDemoReadinessReport(result: DemoReadinessResult): string {
   }
 
   return `${heading}\n${result.issues.map((issue) => `- ${issue}`).join("\n")}`;
+}
+
+export function formatCombinedDemoAndStartupReport(
+  demoResult: DemoReadinessResult,
+  startupInputs: { ffmpegAvailable: boolean; nginxAvailable: boolean },
+): string {
+  return [
+    formatStartupRequirementsReport(evaluateStartupRequirements(startupInputs)),
+    formatDemoReadinessReport(demoResult),
+  ].join("\n\n");
 }

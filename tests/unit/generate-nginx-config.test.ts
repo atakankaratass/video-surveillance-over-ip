@@ -12,6 +12,8 @@ const config: AppConfig = {
     inputFormat: "avfoundation",
     inputSource: "0:none",
     frameRate: 30,
+    pixelFormat: "uyvy422",
+    videoSize: "1280x720",
     audioDevice: null,
   },
   streaming: {
@@ -42,9 +44,23 @@ describe("generateNginxConfig", () => {
   it("serves dash assets and html player content from resolved paths", () => {
     const configText = generateNginxConfig(config, "/workspace/project");
 
-    expect(configText).toContain("root /workspace/project;");
+    expect(configText).toContain("root /workspace/project/dist;");
     expect(configText).toContain("alias /workspace/project/output/dash/;");
-    expect(configText).toContain("try_files $uri /index.html;");
+    expect(configText).toContain("try_files $uri $uri/ /index.html =404;");
+  });
+
+  it("quotes nginx paths when the project root contains spaces", () => {
+    const configText = generateNginxConfig(
+      config,
+      "/Users/example/Development/CS 418 Project 2",
+    );
+
+    expect(configText).toContain(
+      'root "/Users/example/Development/CS 418 Project 2/dist";',
+    );
+    expect(configText).toContain(
+      'alias "/Users/example/Development/CS 418 Project 2/output/dash/";',
+    );
   });
 
   it("declares the expected dash mime types", () => {
@@ -52,5 +68,8 @@ describe("generateNginxConfig", () => {
 
     expect(configText).toContain("application/dash+xml mpd;");
     expect(configText).toContain("video/iso.segment m4s;");
+    expect(configText).toContain("text/html html;");
+    expect(configText).toContain("application/javascript js;");
+    expect(configText).not.toContain("include       mime.types;");
   });
 });

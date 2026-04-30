@@ -10,6 +10,7 @@ export interface ProcessManagerDependencies {
 export interface ProcessManager {
   start(name: string, command: string, args: string[]): Promise<ManagedProcess>;
   stop(name: string): Promise<void>;
+  stopAll(): Promise<void>;
   get(name: string): ManagedProcess | undefined;
 }
 
@@ -38,6 +39,14 @@ export function createProcessManager(
 
       processInfo.kill("SIGTERM");
       processes.delete(name);
+    },
+
+    async stopAll() {
+      const names = [...processes.keys()];
+
+      for (const name of names) {
+        await this.stop(name);
+      }
     },
 
     get(name) {

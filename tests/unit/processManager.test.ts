@@ -39,4 +39,24 @@ describe("createProcessManager", () => {
     expect(kill).toHaveBeenCalledWith("SIGTERM");
     expect(manager.get("ffmpeg")).toBeUndefined();
   });
+
+  it("stops all tracked processes during cleanup", async () => {
+    const ffmpegKill = vi.fn();
+    const nginxKill = vi.fn();
+    const manager = createProcessManager({
+      spawnProcess: async (command) =>
+        command === "ffmpeg"
+          ? { pid: 101, kill: ffmpegKill }
+          : { pid: 202, kill: nginxKill },
+    });
+
+    await manager.start("ffmpeg", "ffmpeg", ["-version"]);
+    await manager.start("nginx", "nginx", ["-v"]);
+    await manager.stopAll();
+
+    expect(ffmpegKill).toHaveBeenCalledWith("SIGTERM");
+    expect(nginxKill).toHaveBeenCalledWith("SIGTERM");
+    expect(manager.get("ffmpeg")).toBeUndefined();
+    expect(manager.get("nginx")).toBeUndefined();
+  });
 });

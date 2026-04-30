@@ -1,8 +1,11 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  formatPlaybackTime,
   getLiveEdgeTime,
   getPauseButtonLabel,
+  getSeekTargetTime,
+  getSeekValue,
   getToggledPlaybackStatus,
 } from "../../src/player/controls";
 
@@ -39,5 +42,18 @@ describe("player controls helpers", () => {
         end: () => 0,
       }),
     ).toBeNull();
+  });
+
+  it("maps current time into a slider value within the seekable range", () => {
+    expect(getSeekValue(15, 10, 20)).toBe(50);
+  });
+
+  it("maps slider percentage back into a target seek time", () => {
+    expect(getSeekTargetTime(25, 10, 18)).toBe(12);
+  });
+
+  it("formats playback times as mm:ss", () => {
+    expect(formatPlaybackTime(0)).toBe("00:00");
+    expect(formatPlaybackTime(75)).toBe("01:15");
   });
 });

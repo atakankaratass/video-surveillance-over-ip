@@ -1,11 +1,12 @@
 import { access, readFile } from "node:fs/promises";
 import { constants } from "node:fs";
+import { createServer } from "node:net";
 import { resolve } from "node:path";
 
 import { parseAppConfig } from "../src/server/config";
 import {
   evaluateDemoReadiness,
-  formatDemoReadinessReport,
+  formatCombinedDemoAndStartupReport,
 } from "../src/server/demoCheck";
 import { listAvfoundationDevices } from "../src/server/ffmpeg/listAvfoundationDevices";
 import { validateEnvironment } from "../src/server/validateEnvironment";
@@ -37,6 +38,22 @@ async function commandExists(command: string): Promise<boolean> {
   }
 }
 
+async function portAvailable(port: number): Promise<boolean> {
+  return new Promise((resolvePromise) => {
+    const server = createServer();
+
+    server.once("error", () => {
+      resolvePromise(false);
+    });
+
+    server.once("listening", () => {
+      server.close(() => resolvePromise(true));
+    });
+
+    server.listen(port, "127.0.0.1");
+  });
+}
+
 async function main(): Promise<void> {
   const configPath = process.argv[2] ?? "configs/app.example.json";
   const configText = await readFile(configPath, "utf8");
@@ -45,8 +62,11 @@ async function main(): Promise<void> {
   const environment = await validateEnvironment(config, {
     commandExists,
     directoryWritable: async (path) => fileExists(resolve(projectRoot, path)),
+    portAvailable,
   });
   const devices = await listAvfoundationDevices();
+  const ffmpegAvailable = await commandExists("ffmpeg");
+  const nginxAvailable = await commandExists("nginx");
   const result = evaluateDemoReadiness(config, {
     environmentOk: environment.ok,
     hasGeneratedNginxConfig: await fileExists(
@@ -61,7 +81,12 @@ async function main(): Promise<void> {
     availableVideoDevices: devices.video,
   });
 
-  console.log(formatDemoReadinessReport(result));
+  console.log(
+    formatCombinedDemoAndStartupReport(result, {
+      ffmpegAvailable,
+      nginxAvailable,
+    }),
+  );
 
   if (!result.ok) {
     process.exitCode = 1;
