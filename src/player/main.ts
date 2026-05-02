@@ -184,7 +184,10 @@ playerGoLiveButton.addEventListener("click", () => {
     playerVideoElement.currentTime = liveEdgeTime;
   }
 
-  void playerVideoElement.play().catch(() => undefined);
+  playerVideoElement.play().catch(() => {
+    // Live stream is at edge, video might be still loading
+    // Just ensure we're at live status
+  });
   applyStatus("live");
   updateSeekUi();
 });
@@ -205,7 +208,7 @@ playerSeekSlider.addEventListener("input", () => {
 
   playerVideoElement.currentTime = targetTime;
   playerSeekInput.value = Math.round(targetTime).toString();
-  applyStatus("paused");
+  // Don't auto-pause - user can seek while playing
   updateSeekUi();
 });
 
@@ -217,7 +220,7 @@ playerSeekButton.addEventListener("click", () => {
   }
 
   playerVideoElement.currentTime = requestedSeconds;
-  applyStatus("paused");
+  // Don't auto-pause - user can seek while playing
   updateSeekUi();
 });
 
