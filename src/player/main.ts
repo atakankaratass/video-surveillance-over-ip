@@ -169,7 +169,7 @@ function updateSeekUi(): void {
     return;
   }
 
-  const rangeStart = Math.max(0, liveEdgeTime - 30);
+  const rangeStart = Math.max(0, liveEdgeTime - 60);
   playerSeekSlider.value = String(
     getSeekValue(playerVideoElement.currentTime, rangeStart, liveEdgeTime),
   );
@@ -205,9 +205,9 @@ playerGoLiveButton.addEventListener("click", () => {
   const liveEdgeTime = getLiveEdgeTime(playerVideoElement.seekable);
 
   if (liveEdgeTime !== null) {
-    playerVideoElement.currentTime = liveEdgeTime;
-    // Don't auto-play immediately - DASH needs time to buffer
-    // Just set the position and user can click play when ready
+    // Go 6 seconds before live edge to avoid freezing (buffer time)
+    const targetTime = Math.max(0, liveEdgeTime - 6);
+    playerVideoElement.currentTime = targetTime;
   }
   applyStatus("live");
   updateSeekUi();
@@ -240,7 +240,7 @@ playerSeekSlider.addEventListener("input", () => {
     return;
   }
 
-  const rangeStart = Math.max(0, liveEdgeTime - 30);
+  const rangeStart = Math.max(0, liveEdgeTime - 60);
   const targetTime = getSeekTargetTime(
     Number(playerSeekSlider.value),
     rangeStart,
@@ -274,7 +274,7 @@ playerSeekSlider.addEventListener("mousemove", (event) => {
 
   const rect = playerSeekSlider.getBoundingClientRect();
   const hoverPercentage = ((event.clientX - rect.left) / rect.width) * 100;
-  const rangeStart = Math.max(0, liveEdgeTime - 30);
+  const rangeStart = Math.max(0, liveEdgeTime - 60);
   const previewState = getThumbnailPreviewState(
     thumbnailMetadata,
     hoverPercentage,
