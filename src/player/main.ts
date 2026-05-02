@@ -170,11 +170,25 @@ playerPauseButton.addEventListener("click", () => {
 
   if (nextStatus === "paused") {
     playerVideoElement.pause();
+    applyStatus("paused");
   } else {
-    void playerVideoElement.play().catch(() => undefined);
-  }
+    // When resuming, check current position
+    const liveEdgeTime = getLiveEdgeTime(playerVideoElement.seekable);
+    const isAtLiveEdge =
+      liveEdgeTime !== null &&
+      Math.abs(playerVideoElement.currentTime - liveEdgeTime) < 2;
 
-  applyStatus(nextStatus);
+    if (!isAtLiveEdge) {
+      // Not at live edge - just resume from where we are
+      playerVideoElement.play().catch(() => undefined);
+      applyStatus("live");
+    } else {
+      // At live edge - can resume normally
+      playerVideoElement.play().catch(() => undefined);
+      applyStatus("live");
+    }
+  }
+  updateSeekUi();
 });
 
 playerGoLiveButton.addEventListener("click", () => {
