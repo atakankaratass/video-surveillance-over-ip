@@ -26,7 +26,7 @@ describe("playerShell", () => {
 
   it("formats the waiting status for the shell", () => {
     expect(getStatusLabel("waiting-for-stream")).toBe(
-      "Player status: waiting-for-stream",
+      "Status: waiting-for-stream",
     );
   });
 
@@ -38,7 +38,7 @@ describe("playerShell", () => {
 
     applyPlayerShellState(elements, "paused");
 
-    expect(elements.statusElement.textContent).toBe("Player status: paused");
+    expect(elements.statusElement.textContent).toBe("Status: paused");
     expect(elements.pauseButton.textContent).toBe("Resume");
   });
 });
