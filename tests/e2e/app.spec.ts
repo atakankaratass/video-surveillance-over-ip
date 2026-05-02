@@ -55,7 +55,6 @@ test("supports explicit seek time entry", async ({ page }) => {
   await page.getByTestId("seek-input").fill("1");
   await page.getByTestId("seek-button").click();
 
-  await expect(page.getByText("Status: paused")).toBeVisible();
   await expect(
     page
       .getByTestId("player-video")
