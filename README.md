@@ -58,6 +58,7 @@ Phase 3: real local streaming validation and submission-readiness preparation.
 - `make validate-env`
 - `make list-devices`
 - `make demo-check`
+- `make motion-run`
 - `make thumbnails-generate`
 - `make startup-prepare`
 - `make startup-nginx`
@@ -106,6 +107,7 @@ It is a preflight readiness check. It does not replace real local playback and c
 - Generate artifacts and start both: `npm run startup:all`
 - Generate artifacts and start the audio-enabled live stack: `npm run startup:audio`
 - Generate artifacts and start the adaptive DASH live stack: `npm run startup:abr`
+- Generate motion detection status artifacts for the baseline live stream: `npm run motion:run`
 - Generate thumbnail preview artifacts for the baseline live stream: `npm run thumbnails:generate`
 
 Equivalent Make targets:
@@ -116,6 +118,7 @@ Equivalent Make targets:
 - `make startup-all`
 - `make startup-audio`
 - `make startup-abr`
+- `make motion-run`
 - `make thumbnails-generate`
 
 Audio mode notes:
@@ -130,6 +133,12 @@ Adaptive DASH mode notes:
 - Adaptive DASH mode is optional extra credit.
 - Adaptive startup writes the DASH manifest to `/dash/live-abr.mpd`.
 - Adaptive startup summary prints a player URL that includes the correct `?manifest=` query parameter for the ABR manifest.
+
+Motion detection notes:
+
+- Motion detection is optional extra credit.
+- The first version is baseline-only and writes artifacts under `/dash/motion/`.
+- Run `npm run motion:run` or `make motion-run` while the baseline stack is active.
 
 Thumbnail preview notes:
 

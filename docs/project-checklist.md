@@ -251,11 +251,11 @@ Current local startup/dev/CI milestone contents:
 
 ### Motion Detection
 
-- [ ] Add motion detection core
-- [ ] Add motion service
-- [ ] Add viewer notification event model
-- [ ] Add motion detection tests
-- [ ] Render motion notification UI
+- [x] Add motion detection core
+- [x] Add motion service
+- [x] Add viewer notification event model
+- [x] Add motion detection tests
+- [x] Render motion notification UI
 
 ### Thumbnail Seek UI
 

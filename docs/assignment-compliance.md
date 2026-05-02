@@ -20,5 +20,5 @@
 
 - [x] Audio capture and playback
 - [x] Adaptive DASH ladder
-- [ ] Motion detection with viewer notifications
+- [x] Motion detection with viewer notifications
 - [x] Thumbnail-assisted seeking

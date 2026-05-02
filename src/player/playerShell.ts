@@ -16,6 +16,7 @@ export function createPlayerShellMarkup(status: PlayerStatus): string {
     <section>
       <h1>CS 418 Video Surveillance over IP</h1>
       <p data-testid="player-status">${getStatusLabel(status)}</p>
+      <p data-testid="motion-notification" hidden style="display:none;">Motion detected</p>
       <p data-testid="screenshot-status">Screenshot status: idle</p>
       <p data-testid="current-time">00:00</p>
       <p data-testid="live-edge-time">00:00</p>

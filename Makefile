@@ -1,6 +1,6 @@
 .DEFAULT_GOAL := help
 
-.PHONY: help install format lint typecheck test test-coverage build e2e validate-env list-devices demo-check thumbnails-generate startup-prepare startup-nginx startup-ffmpeg startup-all startup-audio startup-abr startup-stop latency-run validate-pr
+.PHONY: help install format lint typecheck test test-coverage build e2e validate-env list-devices demo-check motion-run thumbnails-generate startup-prepare startup-nginx startup-ffmpeg startup-all startup-audio startup-abr startup-stop latency-run validate-pr
 
 help:
 	@echo "Available targets:"
@@ -15,6 +15,7 @@ help:
 	@echo "  make validate-env   - Run FFmpeg/NGINX environment checks"
 	@echo "  make list-devices   - List local avfoundation capture devices"
 	@echo "  make demo-check     - Check whether the local demo path is ready"
+	@echo "  make motion-run     - Generate motion detection status artifacts"
 	@echo "  make thumbnails-generate - Generate thumbnail preview artifacts"
 	@echo "  make startup-prepare - Generate local startup artifacts and summary"
 	@echo "  make startup-nginx  - Generate artifacts and start NGINX"
@@ -58,6 +59,9 @@ list-devices:
 
 demo-check:
 	npm run demo:check
+
+motion-run:
+	npm run motion:run
 
 thumbnails-generate:
 	npm run thumbnails:generate

@@ -12,6 +12,7 @@ import {
   createPlayerShellMarkup,
   type PlayerStatus,
 } from "./playerShell";
+import { loadMotionStatus } from "./notifications";
 import { captureScreenshot } from "./screenshot";
 import {
   getThumbnailPreviewState,
@@ -48,6 +49,9 @@ const screenshotButton = rootElement.querySelector<HTMLButtonElement>(
 const screenshotStatus = rootElement.querySelector<HTMLParagraphElement>(
   '[data-testid="screenshot-status"]',
 );
+const motionNotification = rootElement.querySelector<HTMLParagraphElement>(
+  '[data-testid="motion-notification"]',
+);
 const currentTimeElement = rootElement.querySelector<HTMLParagraphElement>(
   '[data-testid="current-time"]',
 );
@@ -73,6 +77,7 @@ if (
   !pauseButton ||
   !goLiveButton ||
   !screenshotButton ||
+  !motionNotification ||
   !screenshotStatus ||
   !currentTimeElement ||
   !liveEdgeTimeElement ||
@@ -89,6 +94,7 @@ const playerStatusElement = statusElement;
 const playerPauseButton = pauseButton;
 const playerGoLiveButton = goLiveButton;
 const playerScreenshotButton = screenshotButton;
+const playerMotionNotification = motionNotification;
 const playerScreenshotStatus = screenshotStatus;
 const playerCurrentTimeElement = currentTimeElement;
 const playerLiveEdgeTimeElement = liveEdgeTimeElement;
@@ -102,6 +108,27 @@ let thumbnailMetadata: ThumbnailPreviewMetadata | null = null;
 void loadThumbnailMetadata(window.fetch.bind(window)).then((result) => {
   thumbnailMetadata = result;
 });
+
+function applyMotionNotification(detected: boolean): void {
+  if (!detected) {
+    playerMotionNotification.hidden = true;
+    playerMotionNotification.style.display = "none";
+    return;
+  }
+
+  playerMotionNotification.hidden = false;
+  playerMotionNotification.style.display = "block";
+  playerMotionNotification.textContent = "Motion detected";
+}
+
+function refreshMotionNotification(): void {
+  void loadMotionStatus(window.fetch.bind(window)).then((result) => {
+    applyMotionNotification(result?.detected ?? false);
+  });
+}
+
+refreshMotionNotification();
+window.setInterval(refreshMotionNotification, 2000);
 
 function applyStatus(status: PlayerStatus): void {
   currentStatus = status;
