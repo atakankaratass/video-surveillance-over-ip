@@ -10,6 +10,7 @@ import { startLiveControlServer } from "../src/server/liveControlServer";
 import { bootstrapServer } from "../src/server/server";
 import { createStartupPlan } from "../src/server/startupPlan";
 import { formatStartupSummary } from "../src/server/startupSummary";
+import { generateThumbnailArtifacts } from "../src/server/thumbnails/service";
 
 function waitForShutdownSignal(
   processManager: ReturnType<typeof createProcessManager>,
@@ -111,6 +112,19 @@ async function main(): Promise<void> {
       startupPlan.ffmpeg.args,
     );
     console.log("FFmpeg process started.");
+
+    console.log("Generating thumbnails in 15 seconds...");
+    await new Promise((resolve) => setTimeout(resolve, 15000));
+
+    await generateThumbnailArtifacts(config, process.cwd(), {
+      ensureDirectory: async (path) => {
+        await mkdir(path, { recursive: true });
+      },
+      writeTextFile: async (path, content) => {
+        await writeFile(path, content, "utf8");
+      },
+    });
+    console.log("Thumbnails generated.");
   }
 
   if (options.startNginx || options.startFfmpeg) {

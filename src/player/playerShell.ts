@@ -56,10 +56,12 @@ export function createPlayerShellMarkup(status: PlayerStatus): string {
         <input data-testid="seek-input" type="number" min="0" value="0" style="width:80px;padding:8px;font:14px monospace;background:#222;color:#fff;border:1px solid #444;border-radius:4px;" />
         <button type="button" data-testid="seek-button" style="padding:8px 16px;font:14px bold;background:#333;color:#fff;border:none;border-radius:4px;cursor:pointer;">Seek</button>
       </div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;" aria-label="Player controls">
-        <button type="button" data-testid="pause-button" style="flex:1;min-width:120px;padding:12px 20px;font:bold 14px;background:${status === "paused" ? "#4CAF50" : "#ff9800"};color:#fff;border:none;border-radius:6px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.2);transition:transform 0.1s;">${getPauseButtonLabel(status)}</button>
-        <button type="button" data-testid="go-live-button" style="flex:1;min-width:120px;padding:12px 20px;font:bold 14px;background:#2196F3;color:#fff;border:none;border-radius:6px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.2);transition:transform 0.1s;">Go Live</button>
-        <button type="button" data-testid="screenshot-button" style="flex:1;min-width:120px;padding:12px 20px;font:bold 14px;background:#9C27B0;color:#fff;border:none;border-radius:6px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.2);transition:transform 0.1s;">Screenshot</button>
+<div style="display:flex;gap:8px;flex-wrap:wrap;" aria-label="Player controls">
+        <button type="button" data-testid="pause-button" style="flex:1;min-width:90px;padding:12px 20px;font:bold 14px;background:${status === "paused" ? "#4CAF50" : "#ff9800"};color:#fff;border:none;border-radius:6px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.2);transition:transform 0.1s;">${getPauseButtonLabel(status)}</button>
+        <button type="button" data-testid="go-live-button" style="flex:1;min-width:90px;padding:12px 20px;font:bold 14px;background:#2196F3;color:#fff;border:none;border-radius:6px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.2);transition:transform 0.1s;">Go Live</button>
+        <button type="button" data-testid="rewind-button" style="flex:1;min-width:90px;padding:12px 20px;font:bold 14px;background:#607D8B;color:#fff;border:none;border-radius:6px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.2);transition:transform 0.1s;">-10s</button>
+        <button type="button" data-testid="forward-button" style="flex:1;min-width:90px;padding:12px 20px;font:bold 14px;background:#607D8B;color:#fff;border:none;border-radius:6px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.2);transition:transform 0.1s;">+10s</button>
+        <button type="button" data-testid="screenshot-button" style="flex:1;min-width:90px;padding:12px 20px;font:bold 14px;background:#9C27B0;color:#fff;border:none;border-radius:6px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.2);transition:transform 0.1s;">Screenshot</button>
       </div>
       <p data-testid="screenshot-status" style="margin-top:10px;font:12px monospace;color:#777;">Screenshot: idle</p>
     </section>

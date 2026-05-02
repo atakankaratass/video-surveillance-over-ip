@@ -43,6 +43,12 @@ const pauseButton = rootElement.querySelector<HTMLButtonElement>(
 const goLiveButton = rootElement.querySelector<HTMLButtonElement>(
   '[data-testid="go-live-button"]',
 );
+const rewindButton = rootElement.querySelector<HTMLButtonElement>(
+  '[data-testid="rewind-button"]',
+);
+const forwardButton = rootElement.querySelector<HTMLButtonElement>(
+  '[data-testid="forward-button"]',
+);
 const screenshotButton = rootElement.querySelector<HTMLButtonElement>(
   '[data-testid="screenshot-button"]',
 );
@@ -79,6 +85,8 @@ if (
   !statusElement ||
   !pauseButton ||
   !goLiveButton ||
+  !rewindButton ||
+  !forwardButton ||
   !screenshotButton ||
   !motionNotification ||
   !screenshotStatus ||
@@ -97,6 +105,8 @@ const playerVideoElement = videoElement;
 const playerStatusElement = statusElement;
 const playerPauseButton = pauseButton;
 const playerGoLiveButton = goLiveButton;
+const playerRewindButton = rewindButton;
+const playerForwardButton = forwardButton;
 const playerScreenshotButton = screenshotButton;
 const playerMotionNotification = motionNotification;
 const playerScreenshotStatus = screenshotStatus;
@@ -203,6 +213,26 @@ playerGoLiveButton.addEventListener("click", () => {
     // Just ensure we're at live status
   });
   applyStatus("live");
+  updateSeekUi();
+});
+
+playerRewindButton.addEventListener("click", () => {
+  const liveEdgeTime = getLiveEdgeTime(playerVideoElement.seekable);
+  if (liveEdgeTime === null) return;
+
+  const newTime = Math.max(0, playerVideoElement.currentTime - 10);
+  playerVideoElement.currentTime = newTime;
+  playerSeekInput.value = Math.round(newTime).toString();
+  updateSeekUi();
+});
+
+playerForwardButton.addEventListener("click", () => {
+  const liveEdgeTime = getLiveEdgeTime(playerVideoElement.seekable);
+  if (liveEdgeTime === null) return;
+
+  const newTime = Math.min(liveEdgeTime, playerVideoElement.currentTime + 10);
+  playerVideoElement.currentTime = newTime;
+  playerSeekInput.value = Math.round(newTime).toString();
   updateSeekUi();
 });
 
