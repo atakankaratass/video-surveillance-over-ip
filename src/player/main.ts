@@ -169,7 +169,7 @@ function updateSeekUi(): void {
     return;
   }
 
-  const rangeStart = Math.max(0, liveEdgeTime - 60);
+  const rangeStart = Math.max(0, liveEdgeTime - 120);
   playerSeekSlider.value = String(
     getSeekValue(playerVideoElement.currentTime, rangeStart, liveEdgeTime),
   );
@@ -240,7 +240,7 @@ playerSeekSlider.addEventListener("input", () => {
     return;
   }
 
-  const rangeStart = Math.max(0, liveEdgeTime - 60);
+  const rangeStart = Math.max(0, liveEdgeTime - 120);
   const targetTime = getSeekTargetTime(
     Number(playerSeekSlider.value),
     rangeStart,
@@ -274,7 +274,7 @@ playerSeekSlider.addEventListener("mousemove", (event) => {
 
   const rect = playerSeekSlider.getBoundingClientRect();
   const hoverPercentage = ((event.clientX - rect.left) / rect.width) * 100;
-  const rangeStart = Math.max(0, liveEdgeTime - 60);
+  const rangeStart = Math.max(0, liveEdgeTime - 120);
   const previewState = getThumbnailPreviewState(
     thumbnailMetadata,
     hoverPercentage,
