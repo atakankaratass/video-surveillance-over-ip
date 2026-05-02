@@ -81,6 +81,7 @@ async function main(): Promise<void> {
   });
   const startupPlan = createStartupPlan(config, process.cwd(), {
     audio: options.audio,
+    abr: options.abr,
   });
   const heartbeatPort = config.server.port + 1;
 

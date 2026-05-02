@@ -1,6 +1,6 @@
 .DEFAULT_GOAL := help
 
-.PHONY: help install format lint typecheck test test-coverage build e2e validate-env list-devices demo-check startup-prepare startup-nginx startup-ffmpeg startup-all startup-audio startup-stop latency-run validate-pr
+.PHONY: help install format lint typecheck test test-coverage build e2e validate-env list-devices demo-check startup-prepare startup-nginx startup-ffmpeg startup-all startup-audio startup-abr startup-stop latency-run validate-pr
 
 help:
 	@echo "Available targets:"
@@ -20,6 +20,7 @@ help:
 	@echo "  make startup-ffmpeg - Generate artifacts and start FFmpeg"
 	@echo "  make startup-all    - Generate artifacts and start NGINX and FFmpeg"
 	@echo "  make startup-audio  - Generate artifacts and start the audio-enabled live stack"
+	@echo "  make startup-abr    - Generate artifacts and start the adaptive DASH live stack"
 	@echo "  make startup-stop   - Stop live demo processes"
 	@echo "  make latency-run    - Generate a latency summary report"
 	@echo "  make validate-pr    - Run the full local validation suite"
@@ -71,6 +72,9 @@ startup-all:
 
 startup-audio:
 	npm run startup:audio
+
+startup-abr:
+	npm run startup:abr
 
 startup-stop:
 	npm run startup:stop

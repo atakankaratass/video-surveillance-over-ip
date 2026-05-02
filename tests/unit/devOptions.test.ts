@@ -10,6 +10,7 @@ describe("parseDevOptions", () => {
       startFfmpeg: false,
       listDevices: false,
       audio: false,
+      abr: false,
     });
   });
 
@@ -27,6 +28,7 @@ describe("parseDevOptions", () => {
       startFfmpeg: true,
       listDevices: false,
       audio: true,
+      abr: false,
     });
   });
 
@@ -37,6 +39,7 @@ describe("parseDevOptions", () => {
       startFfmpeg: true,
       listDevices: false,
       audio: false,
+      abr: false,
     });
   });
 
@@ -47,6 +50,18 @@ describe("parseDevOptions", () => {
       startFfmpeg: false,
       listDevices: false,
       audio: true,
+      abr: false,
+    });
+  });
+
+  it("supports abr startup mode", () => {
+    expect(parseDevOptions(["--abr"])).toEqual({
+      configPath: "configs/app.example.json",
+      startNginx: false,
+      startFfmpeg: false,
+      listDevices: false,
+      audio: false,
+      abr: true,
     });
   });
 

@@ -63,6 +63,7 @@ Phase 3: real local streaming validation and submission-readiness preparation.
 - `make startup-ffmpeg`
 - `make startup-all`
 - `make startup-audio`
+- `make startup-abr`
 - `make validate-pr`
 
 ## GitHub Actions
@@ -103,6 +104,7 @@ It is a preflight readiness check. It does not replace real local playback and c
 - Generate artifacts and start FFmpeg: `npm run startup:ffmpeg`
 - Generate artifacts and start both: `npm run startup:all`
 - Generate artifacts and start the audio-enabled live stack: `npm run startup:audio`
+- Generate artifacts and start the adaptive DASH live stack: `npm run startup:abr`
 
 Equivalent Make targets:
 
@@ -111,6 +113,7 @@ Equivalent Make targets:
 - `make startup-ffmpeg`
 - `make startup-all`
 - `make startup-audio`
+- `make startup-abr`
 
 Audio mode notes:
 
@@ -118,3 +121,9 @@ Audio mode notes:
 - Audio startup requires `capture.audioDevice` to be configured in the app config.
 - Audio startup writes the DASH manifest to `/dash/live-audio.mpd`.
 - Audio startup summary now prints an audio-ready player URL that includes the correct `?manifest=` query parameter.
+
+Adaptive DASH mode notes:
+
+- Adaptive DASH mode is optional extra credit.
+- Adaptive startup writes the DASH manifest to `/dash/live-abr.mpd`.
+- Adaptive startup summary prints a player URL that includes the correct `?manifest=` query parameter for the ABR manifest.

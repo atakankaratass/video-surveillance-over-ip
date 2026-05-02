@@ -51,6 +51,7 @@ describe("createStartupPlan", () => {
     const plan = createStartupPlan(config, "/workspace/project");
 
     expect(plan.audioEnabled).toBe(false);
+    expect(plan.abrEnabled).toBe(false);
     expect(plan.playerUrl).toBe("http://127.0.0.1:8080");
     expect(plan.manifestUrl).toBe("http://127.0.0.1:8080/dash/live.mpd");
   });

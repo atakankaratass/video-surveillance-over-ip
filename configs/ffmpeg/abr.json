@@ -1,0 +1,12 @@
+{
+  "videoCodec": "libx264",
+  "preset": "veryfast",
+  "tune": "zerolatency",
+  "pixelFormat": "yuv420p",
+  "manifestName": "live-abr.mpd",
+  "representations": [
+    { "resolution": "640x360", "bitrate": "400k" },
+    { "resolution": "960x540", "bitrate": "1000k" },
+    { "resolution": "1280x720", "bitrate": "2500k" }
+  ]
+}

@@ -19,6 +19,6 @@
 ## Extra Credit Targets
 
 - [x] Audio capture and playback
-- [ ] Adaptive DASH ladder
+- [x] Adaptive DASH ladder
 - [ ] Motion detection with viewer notifications
 - [ ] Thumbnail-assisted seeking

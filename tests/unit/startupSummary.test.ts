@@ -16,6 +16,7 @@ const startupPlan: StartupPlan = {
   playerUrl: "http://127.0.0.1:8080",
   manifestUrl: "http://127.0.0.1:8080/dash/live.mpd",
   audioEnabled: false,
+  abrEnabled: false,
 };
 
 describe("formatStartupSummary", () => {

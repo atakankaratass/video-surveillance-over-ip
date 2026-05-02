@@ -10,6 +10,7 @@ describe("dev device listing options", () => {
       startFfmpeg: false,
       listDevices: true,
       audio: false,
+      abr: false,
     });
   });
 });

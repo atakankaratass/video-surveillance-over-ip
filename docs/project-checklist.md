@@ -243,11 +243,11 @@ Current local startup/dev/CI milestone contents:
 
 ### Adaptive DASH
 
-- [ ] Add ABR FFmpeg command builder
-- [ ] Add ABR config file
-- [ ] Add ABR manifest tests
-- [ ] Generate multi-representation DASH output
-- [ ] Verify dash.js adaptation behavior
+- [x] Add ABR FFmpeg command builder
+- [x] Add ABR config file
+- [x] Add ABR manifest tests
+- [x] Generate multi-representation DASH output
+- [x] Verify dash.js adaptation behavior
 
 ### Motion Detection
 

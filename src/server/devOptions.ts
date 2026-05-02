@@ -4,6 +4,7 @@ export interface DevOptions {
   startFfmpeg: boolean;
   listDevices: boolean;
   audio: boolean;
+  abr: boolean;
 }
 
 export function parseDevOptions(args: string[]): DevOptions {
@@ -13,6 +14,7 @@ export function parseDevOptions(args: string[]): DevOptions {
   let startFfmpeg = false;
   let listDevices = false;
   let audio = false;
+  let abr = false;
 
   for (const arg of args) {
     if (arg === "--start-nginx") {
@@ -41,6 +43,11 @@ export function parseDevOptions(args: string[]): DevOptions {
       continue;
     }
 
+    if (arg === "--abr") {
+      abr = true;
+      continue;
+    }
+
     if (arg.startsWith("--")) {
       throw new Error(`Unknown argument: ${arg}`);
     }
@@ -59,5 +66,6 @@ export function parseDevOptions(args: string[]): DevOptions {
     startFfmpeg,
     listDevices,
     audio,
+    abr,
   };
 }
