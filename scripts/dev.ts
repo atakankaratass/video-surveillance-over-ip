@@ -113,8 +113,10 @@ async function main(): Promise<void> {
     );
     console.log("FFmpeg process started.");
 
-    console.log("Generating thumbnails in 15 seconds...");
-    await new Promise((resolve) => setTimeout(resolve, 15000));
+    console.log(
+      "Generating thumbnails in 30 seconds (waiting for stream to accumulate)...",
+    );
+    await new Promise((resolve) => setTimeout(resolve, 30000));
 
     await generateThumbnailArtifacts(config, process.cwd(), {
       ensureDirectory: async (path) => {
