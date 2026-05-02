@@ -70,6 +70,9 @@ const seekButton = rootElement.querySelector<HTMLButtonElement>(
 const thumbnailPreview = rootElement.querySelector<HTMLDivElement>(
   '[data-testid="thumbnail-preview"]',
 );
+const thumbnailLabel = rootElement.querySelector<HTMLDivElement>(
+  '[data-testid="thumbnail-label"]',
+);
 
 if (
   !videoElement ||
@@ -84,7 +87,8 @@ if (
   !seekSlider ||
   !seekInput ||
   !seekButton ||
-  !thumbnailPreview
+  !thumbnailPreview ||
+  !thumbnailLabel
 ) {
   throw new Error("Player shell elements were not found.");
 }
@@ -102,6 +106,7 @@ const playerSeekSlider = seekSlider;
 const playerSeekInput = seekInput;
 const playerSeekButton = seekButton;
 const playerThumbnailPreview = thumbnailPreview;
+const playerThumbnailLabel = thumbnailLabel;
 const heartbeatUrl = `http://${window.location.hostname}:8091/heartbeat`;
 let thumbnailMetadata: ThumbnailPreviewMetadata | null = null;
 
@@ -236,6 +241,8 @@ playerSeekSlider.addEventListener("mousemove", (event) => {
   if (!previewState.visible) {
     playerThumbnailPreview.hidden = true;
     playerThumbnailPreview.style.display = "none";
+    playerThumbnailLabel.hidden = true;
+    playerThumbnailLabel.style.display = "none";
     return;
   }
 
@@ -243,11 +250,16 @@ playerSeekSlider.addEventListener("mousemove", (event) => {
   playerThumbnailPreview.style.display = "block";
   playerThumbnailPreview.style.backgroundImage = `url(${previewState.imageUrl})`;
   playerThumbnailPreview.style.backgroundPosition = `-${previewState.x}px -${previewState.y}px`;
+  playerThumbnailLabel.hidden = false;
+  playerThumbnailLabel.style.display = "block";
+  playerThumbnailLabel.textContent = previewState.formattedTime;
 });
 
 playerSeekSlider.addEventListener("mouseleave", () => {
   playerThumbnailPreview.hidden = true;
   playerThumbnailPreview.style.display = "none";
+  playerThumbnailLabel.hidden = true;
+  playerThumbnailLabel.style.display = "none";
 });
 
 playerScreenshotButton.addEventListener("click", () => {

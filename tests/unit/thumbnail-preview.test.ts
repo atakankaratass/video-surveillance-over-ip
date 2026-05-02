@@ -30,6 +30,7 @@ describe("thumbnail preview state", () => {
       width: 160,
       height: 90,
       timeSeconds: 15,
+      formattedTime: "00:15",
     });
   });
 });

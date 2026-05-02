@@ -116,7 +116,7 @@ async function main(): Promise<void> {
   if (options.startNginx || options.startFfmpeg) {
     controlServer = await startLiveControlServer({
       port: heartbeatPort,
-      sessionTimeoutMs: 5000,
+      sessionTimeoutMs: 86400000, // 24 hours
       onShutdown: async () => {
         await processManager.stopAll();
       },

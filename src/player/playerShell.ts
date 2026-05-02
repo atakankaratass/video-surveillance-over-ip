@@ -41,6 +41,11 @@ export function createPlayerShellMarkup(status: PlayerStatus): string {
         hidden
         style="display:none; width:160px; height:90px; background-size:auto 90px; background-repeat:no-repeat; border:1px solid #999;"
       ></div>
+      <div
+        data-testid="thumbnail-label"
+        hidden
+        style="display:none; font-size:12px; color:#666; margin-top:2px;"
+      ></div>
       <div>
         <input data-testid="seek-input" type="number" min="0" value="0" />
         <button type="button" data-testid="seek-button">Seek</button>

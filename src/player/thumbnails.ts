@@ -11,7 +11,14 @@ export type ThumbnailPreviewState =
   | ({
       visible: true;
       imageUrl: string;
+      formattedTime: string;
     } & ThumbnailEntry);
+
+function formatSecondsToTime(seconds: number): string {
+  const mins = Math.floor(seconds / 60);
+  const secs = Math.floor(seconds % 60);
+  return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+}
 
 export function getThumbnailPreviewState(
   metadata: ThumbnailPreviewMetadata | null,
@@ -35,6 +42,7 @@ export function getThumbnailPreviewState(
   return {
     visible: true,
     imageUrl: metadata.imageUrl,
+    formattedTime: formatSecondsToTime(entry.timeSeconds),
     ...entry,
   };
 }

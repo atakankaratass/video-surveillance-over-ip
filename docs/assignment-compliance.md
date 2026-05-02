@@ -2,7 +2,7 @@
 
 ## Mandatory Requirements
 
-- [ ] Individual project ownership maintained
+- [x] Individual project ownership maintained
 - [x] FFmpeg used for capture and encoding
 - [x] Real-time encoded content stored on the server
 - [x] HTTP delivery in DASH live profile
@@ -14,7 +14,7 @@
 - [x] Segment durations 2, 4, and 6 tested
 - [x] Latency measured and documented
 - [x] No hardcoded system-specific parameters
-- [ ] Report includes SDK and open-source usage disclosure
+- [x] Report includes SDK and open-source usage disclosure
 
 ## Extra Credit Targets
 
