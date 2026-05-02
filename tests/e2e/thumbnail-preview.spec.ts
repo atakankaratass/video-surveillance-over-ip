@@ -39,6 +39,7 @@ test("shows a thumbnail preview when hovering over the seek slider", async ({
       configurable: true,
       value: {
         length: 1,
+        start: () => 0,
         end: () => 30,
       },
     });
