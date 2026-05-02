@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 
-import { resolveDashModule } from "../../src/player/dashPlayback";
+import {
+  resolveDashModule,
+  resolveManifestUrl,
+} from "../../src/player/dashPlayback";
 
 describe("resolveDashModule", () => {
   it("uses the default export when MediaPlayer exists there", () => {
@@ -24,6 +27,18 @@ describe("resolveDashModule", () => {
   it("throws a clear error when MediaPlayer cannot be found", () => {
     expect(() => resolveDashModule({})).toThrowError(
       "dash.js MediaPlayer export was not found.",
+    );
+  });
+});
+
+describe("resolveManifestUrl", () => {
+  it("uses the default live manifest when no query override is present", () => {
+    expect(resolveManifestUrl("")).toBe("/dash/live.mpd");
+  });
+
+  it("uses the manifest query parameter when provided", () => {
+    expect(resolveManifestUrl("?manifest=%2Fdash%2Flive-audio.mpd")).toBe(
+      "/dash/live-audio.mpd",
     );
   });
 });

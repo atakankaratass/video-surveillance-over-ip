@@ -52,8 +52,8 @@ export function evaluateDemoReadiness(
 
 export function formatDemoReadinessReport(result: DemoReadinessResult): string {
   const heading = result.ok
-    ? "Demo readiness: READY"
-    : "Demo readiness: NOT READY";
+    ? "Preflight readiness: READY"
+    : "Preflight readiness: NOT READY";
 
   if (result.issues.length === 0) {
     return `${heading}\n- No blocking issues detected.`;

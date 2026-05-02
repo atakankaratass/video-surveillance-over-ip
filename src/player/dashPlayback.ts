@@ -1,5 +1,11 @@
 const LIVE_MANIFEST_URL = "/dash/live.mpd";
 
+export function resolveManifestUrl(search: string): string {
+  const params = new URLSearchParams(search);
+
+  return params.get("manifest") ?? LIVE_MANIFEST_URL;
+}
+
 interface DashModuleShape {
   default?: {
     MediaPlayer?: unknown;
@@ -66,5 +72,9 @@ export async function initializeDashPlayback(
     bindings.onError();
   });
 
-  player.initialize(videoElement, LIVE_MANIFEST_URL, false);
+  player.initialize(
+    videoElement,
+    resolveManifestUrl(window.location.search),
+    false,
+  );
 }

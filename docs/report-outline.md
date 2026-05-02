@@ -2,6 +2,11 @@
 
 The final report will be written after implementation and validation are complete.
 
+Preparation docs for the final report and submission:
+
+- `docs/submission-checklist.md`
+- `docs/sdk-and-open-source-disclosure.md`
+
 ## Planned Sections
 
 1. Introduction

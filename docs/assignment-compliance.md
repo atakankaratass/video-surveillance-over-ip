@@ -3,22 +3,22 @@
 ## Mandatory Requirements
 
 - [ ] Individual project ownership maintained
-- [ ] FFmpeg used for capture and encoding
-- [ ] Real-time encoded content stored on the server
-- [ ] HTTP delivery in DASH live profile
-- [ ] HTML5 player uses MSE and JavaScript only
-- [ ] No browser plug-ins used
-- [ ] Required controls implemented
-- [ ] H.264/AVC used for video
-- [ ] AAC used if audio is enabled
-- [ ] Segment durations 2, 4, and 6 tested
-- [ ] Latency measured and documented
-- [ ] No hardcoded system-specific parameters
+- [x] FFmpeg used for capture and encoding
+- [x] Real-time encoded content stored on the server
+- [x] HTTP delivery in DASH live profile
+- [x] HTML5 player uses MSE and JavaScript only
+- [x] No browser plug-ins used
+- [x] Required controls implemented
+- [x] H.264/AVC used for video
+- [x] AAC used if audio is enabled
+- [x] Segment durations 2, 4, and 6 tested
+- [x] Latency measured and documented
+- [x] No hardcoded system-specific parameters
 - [ ] Report includes SDK and open-source usage disclosure
 
 ## Extra Credit Targets
 
-- [ ] Audio capture and playback
+- [x] Audio capture and playback
 - [ ] Adaptive DASH ladder
 - [ ] Motion detection with viewer notifications
 - [ ] Thumbnail-assisted seeking

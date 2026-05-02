@@ -75,7 +75,17 @@ describe("demoCheck", () => {
       issues: ["Environment validation is failing."],
     });
 
-    expect(report).toContain("Demo readiness: NOT READY");
+    expect(report).toContain("Preflight readiness: NOT READY");
     expect(report).toContain("- Environment validation is failing.");
+  });
+
+  it("describes demo-check as a preflight readiness check", () => {
+    const report = formatDemoReadinessReport({
+      ok: true,
+      issues: [],
+    });
+
+    expect(report).toContain("Preflight readiness: READY");
+    expect(report).not.toContain("Full live demo proof");
   });
 });

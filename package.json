@@ -14,6 +14,7 @@
     "startup:nginx": "npm run build && tsx scripts/dev.ts --start-nginx",
     "startup:ffmpeg": "npm run build && tsx scripts/dev.ts --start-ffmpeg",
     "startup:all": "npm run build && tsx scripts/dev.ts --start-all",
+    "startup:audio": "npm run build && tsx scripts/dev.ts --start-all --audio",
     "startup:stop": "tsx scripts/stop-live-demo.ts",
     "lint": "eslint . --max-warnings 0",
     "typecheck": "tsc --noEmit",

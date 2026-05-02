@@ -9,6 +9,7 @@ describe("dev device listing options", () => {
       startNginx: false,
       startFfmpeg: false,
       listDevices: true,
+      audio: false,
     });
   });
 });
