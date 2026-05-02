@@ -38,12 +38,14 @@ The repository is being built incrementally with strict checkpoints. Baseline do
 - `docs/optional-features.md`
 - `docs/project-checklist.md`
 - `docs/report-outline.md`
+- `docs/submission-checklist.md`
+- `docs/sdk-and-open-source-disclosure.md`
 - `docs/superpowers/specs/2026-04-26-video-surveillance-over-ip-design.md`
 - `docs/superpowers/plans/2026-04-26-video-surveillance-over-ip.md`
 
 ## Current Phase
 
-Phase 2: tooling bootstrap plus config and environment validation.
+Phase 3: real local streaming validation and submission-readiness preparation.
 
 ## Available Commands
 
@@ -60,6 +62,7 @@ Phase 2: tooling bootstrap plus config and environment validation.
 - `make startup-nginx`
 - `make startup-ffmpeg`
 - `make startup-all`
+- `make startup-audio`
 - `make validate-pr`
 
 ## GitHub Actions
@@ -91,12 +94,15 @@ On macOS, this uses FFmpeg's `avfoundation` device listing path because the curr
 
 This command is intended to tell us whether the local machine is close to a real assignment demo state, based on environment validation, generated config presence, device discovery, and DASH artifact presence.
 
+It is a preflight readiness check. It does not replace real local playback and control verification.
+
 ## Startup Helpers
 
 - Generate startup artifacts and summary: `npm run startup:prepare`
 - Generate artifacts and start NGINX: `npm run startup:nginx`
 - Generate artifacts and start FFmpeg: `npm run startup:ffmpeg`
 - Generate artifacts and start both: `npm run startup:all`
+- Generate artifacts and start the audio-enabled live stack: `npm run startup:audio`
 
 Equivalent Make targets:
 
@@ -104,3 +110,11 @@ Equivalent Make targets:
 - `make startup-nginx`
 - `make startup-ffmpeg`
 - `make startup-all`
+- `make startup-audio`
+
+Audio mode notes:
+
+- Audio mode is optional extra credit.
+- Audio startup requires `capture.audioDevice` to be configured in the app config.
+- Audio startup writes the DASH manifest to `/dash/live-audio.mpd`.
+- Audio startup summary now prints an audio-ready player URL that includes the correct `?manifest=` query parameter.

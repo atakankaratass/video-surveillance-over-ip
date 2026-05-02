@@ -9,6 +9,7 @@ describe("parseDevOptions", () => {
       startNginx: false,
       startFfmpeg: false,
       listDevices: false,
+      audio: false,
     });
   });
 
@@ -18,12 +19,14 @@ describe("parseDevOptions", () => {
         "configs/local.json",
         "--start-nginx",
         "--start-ffmpeg",
+        "--audio",
       ]),
     ).toEqual({
       configPath: "configs/local.json",
       startNginx: true,
       startFfmpeg: true,
       listDevices: false,
+      audio: true,
     });
   });
 
@@ -33,6 +36,17 @@ describe("parseDevOptions", () => {
       startNginx: true,
       startFfmpeg: true,
       listDevices: false,
+      audio: false,
+    });
+  });
+
+  it("supports audio startup mode", () => {
+    expect(parseDevOptions(["--audio"])).toEqual({
+      configPath: "configs/app.example.json",
+      startNginx: false,
+      startFfmpeg: false,
+      listDevices: false,
+      audio: true,
     });
   });
 

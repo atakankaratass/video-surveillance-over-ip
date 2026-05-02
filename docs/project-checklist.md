@@ -217,29 +217,29 @@ Current local startup/dev/CI milestone contents:
 - [x] Implement real time-shift / rewind behavior against seekable live window
 - [x] Implement explicit seek-to-time behavior in the player UI
 - [x] Verify screenshot against real video frames instead of placeholder state
-- [ ] Validate end-to-end local flow with real camera capture
+- [x] Validate end-to-end local flow with real camera capture
 
 ## Latency Measurement Work
 
 - [x] Add latency measurement module
 - [x] Add latency report output module
 - [x] Add latency run script
-- [ ] Record latency for `2` second segments
-- [ ] Record latency for `4` second segments
-- [ ] Record latency for `6` second segments
+- [x] Record latency for `2` second segments
+- [x] Record latency for `4` second segments
+- [x] Record latency for `6` second segments
 - [x] Add latency methodology scaffold and report generation notes
-- [ ] Document latency methodology and limitations with real results
+- [x] Document latency methodology and limitations with real results
 
 ## Extra Credit Features
 
 ### Audio
 
-- [ ] Add optional audio FFmpeg command builder
-- [ ] Add audio config file
-- [ ] Add audio pipeline tests
-- [ ] Capture microphone input
-- [ ] Encode audio as AAC
-- [ ] Verify browser playback with audio
+- [x] Add optional audio FFmpeg command builder
+- [x] Add audio config file
+- [x] Add audio pipeline tests
+- [x] Capture microphone input
+- [x] Encode audio as AAC
+- [x] Verify browser playback with audio
 
 ### Adaptive DASH
 
@@ -268,15 +268,15 @@ Current local startup/dev/CI milestone contents:
 ## Demo And Submission Preparation
 
 - [x] Add real demo check script
-- [ ] Expand demo runbook with exact launch sequence
-- [ ] Verify webcam detection path for demo machine
+- [x] Expand demo runbook with exact launch sequence
+- [x] Verify webcam detection path for demo machine
 - [x] Verify browser playback path for demo machine
 - [x] Verify required controls in the real demo flow
-- [ ] Verify screenshot in the real demo flow
-- [ ] Document iOS limitation explicitly in final demo docs
-- [ ] Document Android/desktop recommendation explicitly
-- [ ] Prepare submission zip contents checklist
-- [ ] Prepare SDK/open-source usage disclosure list
+- [x] Verify screenshot in the real demo flow
+- [x] Document iOS limitation explicitly in final demo docs
+- [x] Document Android/desktop recommendation explicitly
+- [x] Prepare submission zip contents checklist
+- [x] Prepare SDK/open-source usage disclosure list
 
 ## Final Report
 
@@ -298,21 +298,21 @@ Current local startup/dev/CI milestone contents:
 
 ## Final Assignment Compliance Checklist
 
-- [ ] Webcam capture exists in the real pipeline
-- [ ] Real-time encoding exists in the real pipeline
-- [ ] Server-side storage exists in the real pipeline
-- [ ] HTTP delivery exists in the real pipeline
-- [ ] DASH live profile exists in the real pipeline
-- [ ] HTML5 MSE + JavaScript playback is working
-- [ ] No plugin-based player is used
+- [x] Webcam capture exists in the real pipeline
+- [x] Real-time encoding exists in the real pipeline
+- [x] Server-side storage exists in the real pipeline
+- [x] HTTP delivery exists in the real pipeline
+- [x] DASH live profile exists in the real pipeline
+- [x] HTML5 MSE + JavaScript playback is working
+- [x] No plugin-based player is used
 - [x] H.264 baseline path is the encoding target
-- [ ] Required seek control is working against real live output
-- [ ] Required pause control is working against real live output
-- [ ] Required go-live control is working against real live output
-- [ ] Required screenshot control is working against real live output
-- [ ] Segment tests for 2/4/6 seconds are complete
-- [ ] Latency measurements for 2/4/6 seconds are complete
-- [ ] Optional features implemented for extra credit
+- [x] Required seek control is working against real live output
+- [x] Required pause control is working against real live output
+- [x] Required go-live control is working against real live output
+- [x] Required screenshot control is working against real live output
+- [x] Segment tests for 2/4/6 seconds are complete
+- [x] Latency measurements for 2/4/6 seconds are complete
+- [x] Optional features implemented for extra credit
 - [ ] Final report completed
 - [ ] Screenshots captured for report
 - [ ] Submission bundle prepared

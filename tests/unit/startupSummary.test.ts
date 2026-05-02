@@ -15,6 +15,7 @@ const startupPlan: StartupPlan = {
   },
   playerUrl: "http://127.0.0.1:8080",
   manifestUrl: "http://127.0.0.1:8080/dash/live.mpd",
+  audioEnabled: false,
 };
 
 describe("formatStartupSummary", () => {
@@ -50,5 +51,28 @@ describe("formatStartupSummary", () => {
       "NGINX command: nginx -c /workspace/project/configs/nginx/generated.conf",
     );
     expect(summary).toContain("FFmpeg command: ffmpeg -hide_banner -y");
+  });
+
+  it("states when audio mode is enabled", () => {
+    const summary = formatStartupSummary(
+      {
+        nginxConfigPath: "configs/nginx/generated.conf",
+        manifestPath: "./output/dash/live-audio.mpd",
+      },
+      {
+        ...startupPlan,
+        manifestUrl: "http://127.0.0.1:8080/dash/live-audio.mpd",
+        ffmpeg: {
+          ...startupPlan.ffmpeg,
+          manifestPath: "./output/dash/live-audio.mpd",
+        },
+        audioEnabled: true,
+      },
+    );
+
+    expect(summary).toContain("Audio mode: enabled");
+    expect(summary).toContain(
+      "Manifest URL: http://127.0.0.1:8080/dash/live-audio.mpd",
+    );
   });
 });

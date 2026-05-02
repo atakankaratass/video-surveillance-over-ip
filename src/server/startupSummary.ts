@@ -17,6 +17,7 @@ export function formatStartupSummary(
   return [
     `Generated NGINX config: ${bootstrap.nginxConfigPath}`,
     `FFmpeg manifest target: ${bootstrap.manifestPath}`,
+    `Audio mode: ${startupPlan.audioEnabled ? "enabled" : "disabled"}`,
     `Player URL: ${startupPlan.playerUrl}`,
     `Manifest URL: ${startupPlan.manifestUrl}`,
     `NGINX command: ${nginxCommand}`,

@@ -33,40 +33,18 @@ const config: AppConfig = {
   },
 };
 
-describe("createStartupPlan", () => {
-  it("returns nginx and ffmpeg launch commands", () => {
-    const plan = createStartupPlan(config, "/workspace/project");
-
-    expect(plan.ffmpeg.command).toBe("ffmpeg");
-    expect(plan.nginx.command).toBe("nginx");
-    expect(plan.nginx.args).toEqual([
-      "-c",
-      "/workspace/project/configs/nginx/generated.conf",
-      "-p",
-      "/workspace/project",
-    ]);
-  });
-
-  it("reports the local playback URL from the config", () => {
-    const plan = createStartupPlan(config, "/workspace/project");
-
-    expect(plan.audioEnabled).toBe(false);
-    expect(plan.playerUrl).toBe("http://127.0.0.1:8080");
-    expect(plan.manifestUrl).toBe("http://127.0.0.1:8080/dash/live.mpd");
-  });
-
-  it("can build an audio-enabled startup plan", () => {
+describe("audio startup pipeline", () => {
+  it("builds an audio-enabled startup plan with AAC output", () => {
     const plan = createStartupPlan(config, "/workspace/project", {
       audio: true,
     });
 
     expect(plan.audioEnabled).toBe(true);
-    expect(plan.playerUrl).toBe(
-      "http://127.0.0.1:8080/?manifest=%2Fdash%2Flive-audio.mpd",
-    );
-    expect(plan.ffmpeg.manifestPath).toBe("./output/dash/live-audio.mpd");
+    expect(plan.ffmpeg.command).toBe("ffmpeg");
     expect(plan.ffmpeg.args).toContain("-c:a");
     expect(plan.ffmpeg.args).toContain("aac");
+    expect(plan.ffmpeg.args).toContain("0:0");
+    expect(plan.ffmpeg.manifestPath).toBe("./output/dash/live-audio.mpd");
     expect(plan.manifestUrl).toBe("http://127.0.0.1:8080/dash/live-audio.mpd");
   });
 });

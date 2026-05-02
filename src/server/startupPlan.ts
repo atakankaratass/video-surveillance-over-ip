@@ -1,4 +1,5 @@
 import type { AppConfig } from "./config";
+import { buildAudioCommand } from "./ffmpeg/buildAudioCommand";
 import { buildBaselineCommand } from "./ffmpeg/buildBaselineCommand";
 import { resolveProjectPath } from "./runtimePaths";
 
@@ -10,18 +11,30 @@ export interface StartupPlan {
   };
   playerUrl: string;
   manifestUrl: string;
+  audioEnabled: boolean;
+}
+
+export interface StartupPlanOptions {
+  audio?: boolean;
 }
 
 export function createStartupPlan(
   config: AppConfig,
   projectRoot: string,
+  options: StartupPlanOptions = {},
 ): StartupPlan {
-  const ffmpeg = buildBaselineCommand(config);
+  const audioEnabled = options.audio ?? false;
+  const ffmpeg = audioEnabled
+    ? buildAudioCommand(config)
+    : buildBaselineCommand(config);
   const nginxConfigPath = resolveProjectPath(
     projectRoot,
     "configs/nginx/generated.conf",
   );
-  const playerUrl = `http://${config.server.host}:${config.server.port}`;
+  const playerBaseUrl = `http://${config.server.host}:${config.server.port}`;
+  const playerUrl = audioEnabled
+    ? `${playerBaseUrl}/?manifest=${encodeURIComponent("/dash/live-audio.mpd")}`
+    : playerBaseUrl;
 
   return {
     ffmpeg,
@@ -30,6 +43,7 @@ export function createStartupPlan(
       args: ["-c", nginxConfigPath, "-p", projectRoot],
     },
     playerUrl,
-    manifestUrl: `${playerUrl}/dash/live.mpd`,
+    manifestUrl: `${playerBaseUrl}/dash/${audioEnabled ? "live-audio" : "live"}.mpd`,
+    audioEnabled,
   };
 }

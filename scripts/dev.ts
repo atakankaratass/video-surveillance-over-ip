@@ -79,7 +79,10 @@ async function main(): Promise<void> {
       await writeFile(path, content, "utf8");
     },
   });
-  const startupPlan = createStartupPlan(config, process.cwd());
+  const startupPlan = createStartupPlan(config, process.cwd(), {
+    audio: options.audio,
+  });
+  const heartbeatPort = config.server.port + 1;
 
   console.log(
     formatStartupSummary(
@@ -111,7 +114,7 @@ async function main(): Promise<void> {
 
   if (options.startNginx || options.startFfmpeg) {
     controlServer = await startLiveControlServer({
-      port: 8091,
+      port: heartbeatPort,
       sessionTimeoutMs: 5000,
       onShutdown: async () => {
         await processManager.stopAll();

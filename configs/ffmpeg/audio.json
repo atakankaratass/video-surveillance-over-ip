@@ -1,0 +1,5 @@
+{
+  "audioCodec": "aac",
+  "manifestName": "live-audio.mpd",
+  "notes": "Use this profile when microphone capture is enabled."
+}
