@@ -8,5 +8,4 @@ configs/nginx/generated.conf
 .DS_Store
 .worktrees/
 worktrees/
-package-lock.json
 418 Project 1.docx
