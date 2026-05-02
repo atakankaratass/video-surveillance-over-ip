@@ -206,12 +206,9 @@ playerGoLiveButton.addEventListener("click", () => {
 
   if (liveEdgeTime !== null) {
     playerVideoElement.currentTime = liveEdgeTime;
+    // Don't auto-play immediately - DASH needs time to buffer
+    // Just set the position and user can click play when ready
   }
-
-  playerVideoElement.play().catch(() => {
-    // Live stream is at edge, video might be still loading
-    // Just ensure we're at live status
-  });
   applyStatus("live");
   updateSeekUi();
 });
