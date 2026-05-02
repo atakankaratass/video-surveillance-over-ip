@@ -13,6 +13,11 @@ import {
   type PlayerStatus,
 } from "./playerShell";
 import { captureScreenshot } from "./screenshot";
+import {
+  getThumbnailPreviewState,
+  loadThumbnailMetadata,
+  type ThumbnailPreviewMetadata,
+} from "./thumbnails";
 
 const appElement = document.querySelector<HTMLDivElement>("#app");
 
@@ -58,6 +63,9 @@ const seekInput = rootElement.querySelector<HTMLInputElement>(
 const seekButton = rootElement.querySelector<HTMLButtonElement>(
   '[data-testid="seek-button"]',
 );
+const thumbnailPreview = rootElement.querySelector<HTMLDivElement>(
+  '[data-testid="thumbnail-preview"]',
+);
 
 if (
   !videoElement ||
@@ -70,7 +78,8 @@ if (
   !liveEdgeTimeElement ||
   !seekSlider ||
   !seekInput ||
-  !seekButton
+  !seekButton ||
+  !thumbnailPreview
 ) {
   throw new Error("Player shell elements were not found.");
 }
@@ -86,7 +95,13 @@ const playerLiveEdgeTimeElement = liveEdgeTimeElement;
 const playerSeekSlider = seekSlider;
 const playerSeekInput = seekInput;
 const playerSeekButton = seekButton;
+const playerThumbnailPreview = thumbnailPreview;
 const heartbeatUrl = `http://${window.location.hostname}:8091/heartbeat`;
+let thumbnailMetadata: ThumbnailPreviewMetadata | null = null;
+
+void loadThumbnailMetadata(window.fetch.bind(window)).then((result) => {
+  thumbnailMetadata = result;
+});
 
 function applyStatus(status: PlayerStatus): void {
   currentStatus = status;
@@ -172,6 +187,40 @@ playerSeekButton.addEventListener("click", () => {
   playerVideoElement.currentTime = requestedSeconds;
   applyStatus("paused");
   updateSeekUi();
+});
+
+playerSeekSlider.addEventListener("mousemove", (event) => {
+  const liveEdgeTime = getLiveEdgeTime(playerVideoElement.seekable);
+
+  if (liveEdgeTime === null) {
+    return;
+  }
+
+  const rect = playerSeekSlider.getBoundingClientRect();
+  const hoverPercentage = ((event.clientX - rect.left) / rect.width) * 100;
+  const rangeStart = Math.max(0, liveEdgeTime - 30);
+  const previewState = getThumbnailPreviewState(
+    thumbnailMetadata,
+    hoverPercentage,
+    rangeStart,
+    liveEdgeTime,
+  );
+
+  if (!previewState.visible) {
+    playerThumbnailPreview.hidden = true;
+    playerThumbnailPreview.style.display = "none";
+    return;
+  }
+
+  playerThumbnailPreview.hidden = false;
+  playerThumbnailPreview.style.display = "block";
+  playerThumbnailPreview.style.backgroundImage = `url(${previewState.imageUrl})`;
+  playerThumbnailPreview.style.backgroundPosition = `-${previewState.x}px -${previewState.y}px`;
+});
+
+playerSeekSlider.addEventListener("mouseleave", () => {
+  playerThumbnailPreview.hidden = true;
+  playerThumbnailPreview.style.display = "none";
 });
 
 playerScreenshotButton.addEventListener("click", () => {

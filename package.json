@@ -10,6 +10,7 @@
     "list:devices": "tsx scripts/list-avfoundation-devices.ts",
     "demo:check": "tsx scripts/demo-check.ts",
     "latency:run": "tsx scripts/run-latency-matrix.ts",
+    "thumbnails:generate": "tsx scripts/generate-thumbnails.ts",
     "startup:prepare": "npm run build && tsx scripts/dev.ts",
     "startup:nginx": "npm run build && tsx scripts/dev.ts --start-nginx",
     "startup:ffmpeg": "npm run build && tsx scripts/dev.ts --start-ffmpeg",

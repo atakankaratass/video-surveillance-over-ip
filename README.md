@@ -58,6 +58,7 @@ Phase 3: real local streaming validation and submission-readiness preparation.
 - `make validate-env`
 - `make list-devices`
 - `make demo-check`
+- `make thumbnails-generate`
 - `make startup-prepare`
 - `make startup-nginx`
 - `make startup-ffmpeg`
@@ -105,6 +106,7 @@ It is a preflight readiness check. It does not replace real local playback and c
 - Generate artifacts and start both: `npm run startup:all`
 - Generate artifacts and start the audio-enabled live stack: `npm run startup:audio`
 - Generate artifacts and start the adaptive DASH live stack: `npm run startup:abr`
+- Generate thumbnail preview artifacts for the baseline live stream: `npm run thumbnails:generate`
 
 Equivalent Make targets:
 
@@ -114,6 +116,7 @@ Equivalent Make targets:
 - `make startup-all`
 - `make startup-audio`
 - `make startup-abr`
+- `make thumbnails-generate`
 
 Audio mode notes:
 
@@ -127,3 +130,9 @@ Adaptive DASH mode notes:
 - Adaptive DASH mode is optional extra credit.
 - Adaptive startup writes the DASH manifest to `/dash/live-abr.mpd`.
 - Adaptive startup summary prints a player URL that includes the correct `?manifest=` query parameter for the ABR manifest.
+
+Thumbnail preview notes:
+
+- Thumbnail preview is optional extra credit.
+- The first version is baseline-only and desktop-hover-only.
+- Thumbnail artifacts are generated under `/dash/thumbnails/`.

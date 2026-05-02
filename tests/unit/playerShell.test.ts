@@ -13,6 +13,7 @@ describe("playerShell", () => {
     expect(markup).toContain("CS 418 Video Surveillance over IP");
     expect(markup).toContain('data-testid="player-video"');
     expect(markup).toContain('data-testid="seek-slider"');
+    expect(markup).toContain('data-testid="thumbnail-preview"');
     expect(markup).toContain('data-testid="current-time"');
     expect(markup).toContain('data-testid="live-edge-time"');
     expect(markup).toContain('data-testid="seek-input"');

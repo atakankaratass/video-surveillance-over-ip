@@ -259,11 +259,11 @@ Current local startup/dev/CI milestone contents:
 
 ### Thumbnail Seek UI
 
-- [ ] Add thumbnail generation service
-- [ ] Add thumbnail metadata service
-- [ ] Add thumbnail player UI module
-- [ ] Add thumbnail metadata tests
-- [ ] Add thumbnail preview browser test
+- [x] Add thumbnail generation service
+- [x] Add thumbnail metadata service
+- [x] Add thumbnail player UI module
+- [x] Add thumbnail metadata tests
+- [x] Add thumbnail preview browser test
 
 ## Demo And Submission Preparation
 
