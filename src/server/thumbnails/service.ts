@@ -20,14 +20,78 @@ export interface ThumbnailGenerationResult {
   metadataUrl: string;
 }
 
-export function selectThumbnailSourceSegments(
+function parseSegmentSequence(fileName: string): number | null {
+  const match = fileName.match(/^chunk-stream0-(\d+)\.m4s$/);
+
+  if (!match) {
+    return null;
+  }
+
+  return Number(match[1]);
+}
+
+function getSegmentStartTimeSeconds(
+  fileName: string,
+  segmentDurationSeconds: number,
+): number {
+  const sequence = parseSegmentSequence(fileName);
+
+  if (sequence === null) {
+    return 0;
+  }
+
+  return Math.max(0, sequence - 1) * segmentDurationSeconds;
+}
+
+export function getThumbnailFrameCount(
+  dvrWindowSeconds: number,
+  intervalSeconds: number,
+): number {
+  const safeWindow = Math.max(0, dvrWindowSeconds);
+  const safeInterval = Math.max(1, intervalSeconds);
+
+  return Math.max(3, Math.floor(safeWindow / safeInterval) + 1);
+}
+
+export async function selectThumbnailSourceSegments(
   entries: string[],
   count: number,
-): string[] {
-  return entries
-    .filter((entry) => /^chunk-stream0-\d+\.m4s$/.test(entry))
-    .sort()
-    .slice(-count);
+): Promise<string[]> {
+  const sorted = entries
+    .map((entry) => ({ entry, sequence: parseSegmentSequence(entry) }))
+    .filter(
+      (item): item is { entry: string; sequence: number } =>
+        item.sequence !== null,
+    )
+    .sort((left, right) => left.sequence - right.sequence)
+    .map((item) => item.entry);
+
+  const stableEntries = sorted.length > 1 ? sorted.slice(0, -1) : sorted;
+
+  if (stableEntries.length <= count) {
+    return stableEntries;
+  }
+
+  if (count <= 1) {
+    return [
+      stableEntries[stableEntries.length - 1] ??
+        sorted[sorted.length - 1] ??
+        "",
+    ].filter(Boolean);
+  }
+
+  const selectedIndices = new Set<number>();
+
+  for (let index = 0; index < count; index += 1) {
+    selectedIndices.add(
+      Math.round((index * (stableEntries.length - 1)) / (count - 1)),
+    );
+  }
+
+  return Array.from(selectedIndices)
+    .sort((left, right) => left - right)
+    .map((index) => stableEntries[index])
+    .filter((entry): entry is string => Boolean(entry));
 }
 
 export function buildSpriteCommandArgs(
@@ -74,12 +138,15 @@ export async function generateThumbnailArtifacts(
   const metadataUrl = "/dash/thumbnails/metadata.json";
   const frameWidth = 160;
   const frameHeight = 90;
-  const frameCount = 3;
+  const frameCount = getThumbnailFrameCount(
+    config.streaming.dvrWindowSeconds,
+    config.thumbnails.intervalSeconds,
+  );
 
   await dependencies.ensureDirectory(thumbnailDirectory);
 
   const dashEntries = await readdir(dashDirectory);
-  const selectedSegments = selectThumbnailSourceSegments(
+  const selectedSegments = await selectThumbnailSourceSegments(
     dashEntries,
     frameCount,
   );
@@ -133,8 +200,12 @@ export async function generateThumbnailArtifacts(
     imageUrl,
     frameWidth,
     frameHeight,
-    intervalSeconds: config.thumbnails.intervalSeconds,
-    frameCount: framePaths.length,
+    entryTimesSeconds: selectedSegments.map((segmentFileName) =>
+      getSegmentStartTimeSeconds(
+        segmentFileName,
+        config.streaming.segmentDurationSeconds,
+      ),
+    ),
   });
 
   await dependencies.writeTextFile(

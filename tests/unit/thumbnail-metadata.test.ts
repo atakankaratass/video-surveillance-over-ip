@@ -32,8 +32,7 @@ describe("thumbnail metadata", () => {
         imageUrl: "/dash/thumbnails/sprite.jpg",
         frameWidth: 160,
         frameHeight: 90,
-        intervalSeconds: 10,
-        frameCount: 3,
+        entryTimesSeconds: [0, 10, 20],
       }),
     ).toEqual({
       imageUrl: "/dash/thumbnails/sprite.jpg",
@@ -41,6 +40,24 @@ describe("thumbnail metadata", () => {
         { timeSeconds: 0, x: 0, y: 0, width: 160, height: 90 },
         { timeSeconds: 10, x: 160, y: 0, width: 160, height: 90 },
         { timeSeconds: 20, x: 320, y: 0, width: 160, height: 90 },
+      ],
+    });
+  });
+
+  it("preserves explicit thumbnail times for a mature live window", () => {
+    expect(
+      buildSpriteMetadata({
+        imageUrl: "/dash/thumbnails/sprite.jpg",
+        frameWidth: 160,
+        frameHeight: 90,
+        entryTimesSeconds: [280, 300, 320],
+      }),
+    ).toEqual({
+      imageUrl: "/dash/thumbnails/sprite.jpg",
+      entries: [
+        { timeSeconds: 280, x: 0, y: 0, width: 160, height: 90 },
+        { timeSeconds: 300, x: 160, y: 0, width: 160, height: 90 },
+        { timeSeconds: 320, x: 320, y: 0, width: 160, height: 90 },
       ],
     });
   });

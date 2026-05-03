@@ -2,26 +2,34 @@ import { describe, expect, it } from "vitest";
 
 import {
   buildSpriteCommandArgs,
+  getThumbnailFrameCount,
   selectThumbnailSourceSegments,
 } from "../../src/server/thumbnails/service";
 
 describe("thumbnail service", () => {
-  it("selects up to three latest baseline video chunks in chronological order", () => {
+  it("derives thumbnail frame count from the DVR window and preview interval", () => {
+    expect(getThumbnailFrameCount(120, 5)).toBe(25);
+    expect(getThumbnailFrameCount(120, 60)).toBe(3);
+  });
+
+  it("selects chronologically sorted thumbnails across the available history", async () => {
     expect(
-      selectThumbnailSourceSegments(
+      await selectThumbnailSourceSegments(
         [
-          "chunk-stream0-00001.m4s",
-          "chunk-stream0-00004.m4s",
-          "chunk-stream0-00002.m4s",
-          "chunk-stream1-00002.m4s",
-          "chunk-stream0-00003.m4s",
+          "chunk-stream0-1.m4s",
+          "chunk-stream0-10.m4s",
+          "chunk-stream0-2.m4s",
+          "chunk-stream0-5.m4s",
+          "chunk-stream0-7.m4s",
+          "chunk-stream1-2.m4s",
+          "chunk-stream0-9.m4s",
         ],
         3,
       ),
     ).toEqual([
-      "chunk-stream0-00002.m4s",
-      "chunk-stream0-00003.m4s",
-      "chunk-stream0-00004.m4s",
+      "chunk-stream0-1.m4s",
+      "chunk-stream0-5.m4s",
+      "chunk-stream0-9.m4s",
     ]);
   });
 

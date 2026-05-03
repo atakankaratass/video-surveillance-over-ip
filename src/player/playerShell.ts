@@ -44,7 +44,7 @@ export function createPlayerShellMarkup(status: PlayerStatus): string {
         <div
           data-testid="thumbnail-preview"
           hidden
-          style="display:none;position:absolute;bottom:35px;left:50%;transform:translateX(-50%);width:160px;height:90px;background-size:160px 90px;background-repeat:no-repeat;border:2px solid #fff;border-radius:6px;box-shadow:0 4px 15px rgba(0,0,0,0.5);pointer-events:none;z-index:100;"
+          style="display:none;position:absolute;bottom:35px;left:50%;transform:translateX(-50%);width:160px;height:90px;background-repeat:no-repeat;border:2px solid #fff;border-radius:6px;box-shadow:0 4px 15px rgba(0,0,0,0.5);pointer-events:none;z-index:100;"
         ></div>
         <div
           data-testid="thumbnail-label"

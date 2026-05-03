@@ -15,8 +15,7 @@ export interface BuildSpriteMetadataOptions {
   imageUrl: string;
   frameWidth: number;
   frameHeight: number;
-  intervalSeconds: number;
-  frameCount: number;
+  entryTimesSeconds: number[];
 }
 
 export function buildSpriteMetadata(
@@ -24,8 +23,8 @@ export function buildSpriteMetadata(
 ): ThumbnailMetadata {
   return {
     imageUrl: options.imageUrl,
-    entries: Array.from({ length: options.frameCount }, (_, index) => ({
-      timeSeconds: index * options.intervalSeconds,
+    entries: options.entryTimesSeconds.map((timeSeconds, index) => ({
+      timeSeconds,
       x: index * options.frameWidth,
       y: 0,
       width: options.frameWidth,

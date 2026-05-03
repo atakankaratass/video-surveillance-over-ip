@@ -120,9 +120,21 @@ const playerThumbnailLabel = thumbnailLabel;
 const heartbeatUrl = `http://${window.location.hostname}:8091/heartbeat`;
 let thumbnailMetadata: ThumbnailPreviewMetadata | null = null;
 
-void loadThumbnailMetadata(window.fetch.bind(window)).then((result) => {
-  thumbnailMetadata = result;
-});
+async function refreshThumbnailMetadata(): Promise<void> {
+  try {
+    const result = await loadThumbnailMetadata(window.fetch.bind(window));
+    if (result) {
+      thumbnailMetadata = result;
+    }
+  } catch {
+    // Ignore fetch errors (e.g. 404 before generated)
+  }
+}
+
+void refreshThumbnailMetadata();
+window.setInterval(() => {
+  void refreshThumbnailMetadata();
+}, 10000);
 
 function applyMotionNotification(detected: boolean): void {
   if (!detected) {
