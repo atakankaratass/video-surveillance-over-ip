@@ -1,6 +1,7 @@
 import { spawn } from "node:child_process";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 
 import { parseAppConfig } from "../src/server/config";
 import { parseDevOptions } from "../src/server/devOptions";
@@ -12,13 +13,88 @@ import { createStartupPlan } from "../src/server/startupPlan";
 import { formatStartupSummary } from "../src/server/startupSummary";
 import { generateThumbnailArtifacts } from "../src/server/thumbnails/service";
 
+export interface ThumbnailRefreshLoopOptions {
+  generate: () => Promise<void>;
+  initialDelayMs: number;
+  refreshIntervalMs: number;
+  log?: (message: string) => void;
+}
+
+export interface ThumbnailRefreshLoopHandle {
+  stop: () => void;
+}
+
+export function wait(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+export function startThumbnailRefreshLoop(
+  options: ThumbnailRefreshLoopOptions,
+): ThumbnailRefreshLoopHandle {
+  let stopped = false;
+  let activeTimeout: ReturnType<typeof setTimeout> | null = null;
+  let resolveActiveWait: (() => void) | null = null;
+  const log = options.log ?? console.log;
+
+  const waitForDelay = (delayMs: number): Promise<void> =>
+    new Promise((resolve) => {
+      resolveActiveWait = () => {
+        resolveActiveWait = null;
+        resolve();
+      };
+      activeTimeout = setTimeout(() => {
+        activeTimeout = null;
+        resolveActiveWait?.();
+      }, delayMs);
+    });
+
+  const run = async (): Promise<void> => {
+    log("Generating thumbnails in 60 seconds (waiting for more segments)...");
+    await waitForDelay(options.initialDelayMs);
+
+    while (!stopped) {
+      try {
+        await options.generate();
+        log("Thumbnails generated.");
+      } catch (error) {
+        const message =
+          error instanceof Error ? error.message : "Unknown thumbnail error.";
+        log(`Thumbnail generation failed: ${message}`);
+      }
+
+      if (stopped) {
+        return;
+      }
+
+      await waitForDelay(options.refreshIntervalMs);
+    }
+  };
+
+  void run().catch((error: unknown) => {
+    console.error("Thumbnail generation failed.", error);
+  });
+
+  return {
+    stop() {
+      stopped = true;
+      if (activeTimeout !== null) {
+        clearTimeout(activeTimeout);
+        activeTimeout = null;
+        resolveActiveWait?.();
+      }
+    },
+  };
+}
+
 function waitForShutdownSignal(
   processManager: ReturnType<typeof createProcessManager>,
+  onShutdown?: () => void,
 ): Promise<void> {
   return new Promise((resolvePromise) => {
     const shutdown = async (): Promise<void> => {
       process.off("SIGINT", handleSignal);
       process.off("SIGTERM", handleSignal);
+      onShutdown?.();
       await processManager.stopAll();
       resolvePromise();
     };
@@ -70,6 +146,7 @@ async function main(): Promise<void> {
   });
   let controlServer: Awaited<ReturnType<typeof startLiveControlServer>> | null =
     null;
+  let thumbnailRefreshLoop: ThumbnailRefreshLoopHandle | null = null;
 
   const bootstrap = await bootstrapServer(config, process.cwd(), {
     ensureDirectory: async (path) => {
@@ -113,20 +190,22 @@ async function main(): Promise<void> {
     );
     console.log("FFmpeg process started.");
 
-    console.log(
-      "Generating thumbnails in 60 seconds (waiting for more segments)...",
-    );
-    await new Promise((resolve) => setTimeout(resolve, 60000));
+    const generateThumbnails = async (): Promise<void> => {
+      await generateThumbnailArtifacts(config, process.cwd(), {
+        ensureDirectory: async (path) => {
+          await mkdir(path, { recursive: true });
+        },
+        writeTextFile: async (path, content) => {
+          await writeFile(path, content, "utf8");
+        },
+      });
+    };
 
-    await generateThumbnailArtifacts(config, process.cwd(), {
-      ensureDirectory: async (path) => {
-        await mkdir(path, { recursive: true });
-      },
-      writeTextFile: async (path, content) => {
-        await writeFile(path, content, "utf8");
-      },
+    thumbnailRefreshLoop = startThumbnailRefreshLoop({
+      initialDelayMs: 60000,
+      refreshIntervalMs: 10000,
+      generate: generateThumbnails,
     });
-    console.log("Thumbnails generated.");
   }
 
   if (options.startNginx || options.startFfmpeg) {
@@ -134,14 +213,23 @@ async function main(): Promise<void> {
       port: heartbeatPort,
       sessionTimeoutMs: 86400000, // 24 hours
       onShutdown: async () => {
+        thumbnailRefreshLoop?.stop();
         await processManager.stopAll();
       },
     });
     console.log(`Heartbeat URL: ${controlServer.heartbeatUrl}`);
     console.log("Processes running. Press Ctrl+C to stop them cleanly.");
-    await waitForShutdownSignal(processManager);
+    await waitForShutdownSignal(processManager, () => {
+      thumbnailRefreshLoop?.stop();
+    });
     await controlServer.close();
   }
 }
 
-void main();
+const isDirectExecution =
+  process.argv[1] !== undefined &&
+  fileURLToPath(import.meta.url) === process.argv[1];
+
+if (isDirectExecution) {
+  void main();
+}

@@ -33,4 +33,25 @@ describe("thumbnail preview state", () => {
       formattedTime: "00:15",
     });
   });
+
+  it("loads metadata without relying on browser cache", async () => {
+    const fetchFn = async (
+      input: string | URL | Request,
+      init?: RequestInit,
+    ): Promise<Response> => {
+      expect(input).toBe("/dash/thumbnails/metadata.json");
+      expect(init).toMatchObject({ cache: "no-store" });
+
+      return new Response(JSON.stringify(metadata), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      });
+    };
+
+    const result = await import("../../src/player/thumbnails").then((module) =>
+      module.loadThumbnailMetadata(fetchFn as typeof fetch),
+    );
+
+    expect(result).toEqual(metadata);
+  });
 });

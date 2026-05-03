@@ -1,12 +1,19 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  buildThumbnailImageUrl,
   buildSpriteCommandArgs,
   getThumbnailFrameCount,
   selectThumbnailSourceSegments,
 } from "../../src/server/thumbnails/service";
 
 describe("thumbnail service", () => {
+  it("builds a cache-busted sprite URL from the latest segment", () => {
+    expect(buildThumbnailImageUrl("chunk-stream0-00034.m4s")).toBe(
+      "/dash/thumbnails/sprite.jpg?v=34",
+    );
+  });
+
   it("derives thumbnail frame count from the DVR window and preview interval", () => {
     expect(getThumbnailFrameCount(120, 5)).toBe(25);
     expect(getThumbnailFrameCount(120, 60)).toBe(3);

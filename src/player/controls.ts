@@ -2,7 +2,13 @@ import type { PlayerStatus } from "./playerShell";
 
 export interface SeekableRange {
   length: number;
+  start(index: number): number;
   end(index: number): number;
+}
+
+export interface SeekRange {
+  start: number;
+  end: number;
 }
 
 export function getPauseButtonLabel(status: PlayerStatus): string {
@@ -19,6 +25,19 @@ export function getLiveEdgeTime(seekable: SeekableRange): number | null {
   }
 
   return seekable.end(seekable.length - 1);
+}
+
+export function getSeekRange(seekable: SeekableRange): SeekRange | null {
+  if (seekable.length === 0) {
+    return null;
+  }
+
+  const lastRangeIndex = seekable.length - 1;
+
+  return {
+    start: seekable.start(lastRangeIndex),
+    end: seekable.end(lastRangeIndex),
+  };
 }
 
 export function getSeekValue(

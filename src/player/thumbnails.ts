@@ -51,7 +51,7 @@ export async function loadThumbnailMetadata(
   fetchFn: typeof fetch,
   metadataUrl = "/dash/thumbnails/metadata.json",
 ): Promise<ThumbnailPreviewMetadata | null> {
-  const response = await fetchFn(metadataUrl);
+  const response = await fetchFn(metadataUrl, { cache: "no-store" });
 
   if (!response.ok) {
     return null;

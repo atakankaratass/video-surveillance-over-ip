@@ -30,6 +30,16 @@ function parseSegmentSequence(fileName: string): number | null {
   return Number(match[1]);
 }
 
+export function buildThumbnailImageUrl(latestSegmentFileName: string): string {
+  const sequence = parseSegmentSequence(latestSegmentFileName);
+
+  if (sequence === null) {
+    return "/dash/thumbnails/sprite.jpg";
+  }
+
+  return `/dash/thumbnails/sprite.jpg?v=${sequence}`;
+}
+
 function getSegmentStartTimeSeconds(
   fileName: string,
   segmentDurationSeconds: number,
@@ -134,7 +144,6 @@ export async function generateThumbnailArtifacts(
   const imagePath = join(thumbnailDirectory, "sprite.jpg");
   const tempImagePath = join(thumbnailDirectory, "sprite.tmp.jpg");
   const metadataPath = join(thumbnailDirectory, "metadata.json");
-  const imageUrl = "/dash/thumbnails/sprite.jpg";
   const metadataUrl = "/dash/thumbnails/metadata.json";
   const frameWidth = 160;
   const frameHeight = 90;
@@ -156,6 +165,10 @@ export async function generateThumbnailArtifacts(
       "No baseline DASH video segments are available for thumbnail generation.",
     );
   }
+
+  const latestSegmentFileName =
+    selectedSegments[selectedSegments.length - 1] ?? selectedSegments[0] ?? "";
+  const imageUrl = buildThumbnailImageUrl(latestSegmentFileName);
 
   const initSegmentPath = join(dashDirectory, "init-stream0.m4s");
   const framePaths: string[] = [];

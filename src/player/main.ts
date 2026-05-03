@@ -1,6 +1,7 @@
 import {
   formatPlaybackTime,
   getLiveEdgeTime,
+  getSeekRange,
   getSeekTargetTime,
   getSeekValue,
   getToggledPlaybackStatus,
@@ -169,7 +170,8 @@ function applyStatus(status: PlayerStatus): void {
 }
 
 function updateSeekUi(): void {
-  const liveEdgeTime = getLiveEdgeTime(playerVideoElement.seekable);
+  const seekRange = getSeekRange(playerVideoElement.seekable);
+  const liveEdgeTime = seekRange?.end ?? null;
 
   playerCurrentTimeElement.textContent = formatPlaybackTime(
     playerVideoElement.currentTime,
@@ -181,17 +183,12 @@ function updateSeekUi(): void {
     return;
   }
 
-  const availableDuration =
-    playerVideoElement.seekable.length > 0
-      ? playerVideoElement.seekable.end(0) -
-        playerVideoElement.seekable.start(0)
-      : 0;
-  const rangeStart =
-    availableDuration > 0
-      ? playerVideoElement.seekable.start(0)
-      : Math.max(0, liveEdgeTime - 120);
   playerSeekSlider.value = String(
-    getSeekValue(playerVideoElement.currentTime, rangeStart, liveEdgeTime),
+    getSeekValue(
+      playerVideoElement.currentTime,
+      seekRange?.start ?? 0,
+      liveEdgeTime,
+    ),
   );
 }
 
@@ -254,24 +251,16 @@ playerForwardButton.addEventListener("click", () => {
 });
 
 playerSeekSlider.addEventListener("input", () => {
-  const liveEdgeTime = getLiveEdgeTime(playerVideoElement.seekable);
+  const seekRange = getSeekRange(playerVideoElement.seekable);
+  const liveEdgeTime = seekRange?.end ?? null;
 
   if (liveEdgeTime === null) {
     return;
   }
 
-  const availableDuration =
-    playerVideoElement.seekable.length > 0
-      ? playerVideoElement.seekable.end(0) -
-        playerVideoElement.seekable.start(0)
-      : 0;
-  const rangeStart =
-    availableDuration > 0
-      ? playerVideoElement.seekable.start(0)
-      : Math.max(0, liveEdgeTime - 120);
   const targetTime = getSeekTargetTime(
     Number(playerSeekSlider.value),
-    rangeStart,
+    seekRange?.start ?? 0,
     liveEdgeTime,
   );
 
@@ -294,7 +283,8 @@ playerSeekButton.addEventListener("click", () => {
 });
 
 playerSeekSlider.addEventListener("mousemove", (event) => {
-  const liveEdgeTime = getLiveEdgeTime(playerVideoElement.seekable);
+  const seekRange = getSeekRange(playerVideoElement.seekable);
+  const liveEdgeTime = seekRange?.end ?? null;
 
   if (liveEdgeTime === null) {
     return;
@@ -302,19 +292,10 @@ playerSeekSlider.addEventListener("mousemove", (event) => {
 
   const rect = playerSeekSlider.getBoundingClientRect();
   const hoverPercentage = ((event.clientX - rect.left) / rect.width) * 100;
-  const availableDuration =
-    playerVideoElement.seekable.length > 0
-      ? playerVideoElement.seekable.end(0) -
-        playerVideoElement.seekable.start(0)
-      : 0;
-  const rangeStart =
-    availableDuration > 0
-      ? playerVideoElement.seekable.start(0)
-      : Math.max(0, liveEdgeTime - 120);
   const previewState = getThumbnailPreviewState(
     thumbnailMetadata,
     hoverPercentage,
-    rangeStart,
+    seekRange?.start ?? 0,
     liveEdgeTime,
   );
 

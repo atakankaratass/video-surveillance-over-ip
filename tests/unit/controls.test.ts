@@ -4,6 +4,7 @@ import {
   formatPlaybackTime,
   getLiveEdgeTime,
   getPauseButtonLabel,
+  getSeekRange,
   getSeekTargetTime,
   getSeekValue,
   getToggledPlaybackStatus,
@@ -27,6 +28,9 @@ describe("player controls helpers", () => {
   it("computes the live edge from the final seekable range", () => {
     const seekable = {
       length: 2,
+      start(index: number) {
+        return index === 0 ? 0 : 36;
+      },
       end(index: number) {
         return index === 0 ? 12 : 48;
       },
@@ -39,9 +43,27 @@ describe("player controls helpers", () => {
     expect(
       getLiveEdgeTime({
         length: 0,
+        start: () => 0,
         end: () => 0,
       }),
     ).toBeNull();
+  });
+
+  it("uses the final seekable range for DVR slider calculations", () => {
+    const seekable = {
+      length: 2,
+      start(index: number) {
+        return index === 0 ? 0 : 96;
+      },
+      end(index: number) {
+        return index === 0 ? 12 : 208;
+      },
+    };
+
+    expect(getSeekRange(seekable)).toEqual({
+      start: 96,
+      end: 208,
+    });
   });
 
   it("maps current time into a slider value within the seekable range", () => {
